@@ -1,0 +1,20 @@
+{
+  "name": "handwork-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:production": "node scripts/build.mjs --production",
+    "dev": "node scripts/server.mjs",
+    "preview": "node scripts/server.mjs",
+    "test": "node --test tests/site.test.mjs",
+    "test:browser": "node tests/browser.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

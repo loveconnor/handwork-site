@@ -1,0 +1,20 @@
+{
+  "recorded": "2026-09-14",
+  "app": "Handwork 0.0.9",
+  "theme": "light",
+  "terminal": { "columns": 110, "rows": 38 },
+  "model": "gpt-5.6-sol",
+  "reasoning": "high",
+  "permission_mode": "auto",
+  "workspace": "content/demo-workspace",
+  "prompt": "Fix the bug in slug.js. The slug function should trim the input, lowercase it, and replace one or more spaces with a single hyphen. Run node test.js. Keep the change focused.",
+  "result": {
+    "files_edited": 1,
+    "tool_calls": 5,
+    "test_command": "node test.js",
+    "test_output": "2 tests passed",
+    "exit_code": 0
+  },
+  "recording": "actual-run.script",
+  "note": "The GIF generator caps idle gaps at 650 milliseconds. It does not add or rewrite terminal output."
+}

@@ -1,0 +1,38 @@
+<main id="main" class="wrap docs-page">
+  <header class="docs-hero">
+    <p class="page-kicker">Documentation</p>
+    <h1>Install and configure Handwork.</h1>
+    <p class="page-lead">The npm package supports macOS on Apple Silicon. You need npm and access to a model provider.</p>
+  </header>
+
+  <div class="docs-layout">
+    <aside class="docs-sidebar"><p class="docs-nav-heading">On this page</p><button class="docs-nav-toggle" id="docs-nav-toggle" type="button" aria-expanded="true" aria-controls="docs-sections"><span>On this page</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button><nav id="docs-sections" aria-label="Documentation sections"><a href="#quick-start">Quick start</a><a href="#providers">Model providers</a><a href="#first-task">First task</a><a href="#permissions">Permissions and data</a><a href="#commands">Commands</a><a href="#sessions">Saved sessions</a><a href="#source">Build from source</a></nav><a class="docs-repo" href="https://github.com/loveconnor/handwork#readme">Open the full reference <span aria-hidden="true">↗</span></a></aside>
+
+    <div class="docs-content">
+      <section id="quick-start" class="doc-section"><h2><span>01</span>Quick start</h2><pre><code><span class="code-comment"># Install Handwork</span>
+npm install -g handwork
+
+<span class="code-comment"># Open a project</span>
+cd /path/to/your/project
+handwork</code></pre><p>Run <code>/provider</code> in Handwork to connect a provider. Run <code>/model</code> to choose a model.</p><div class="note"><strong>Check permissions first.</strong><p>Run <code>/permissions</code>. The default <code>auto</code> mode reviews sensitive actions that no rule has approved. It can still approve an action, so it is not read only.</p></div></section>
+
+      <section id="providers" class="doc-section"><h2><span>02</span>Model providers</h2><p>Handwork supports OpenAI, Anthropic, Gemini, xAI, DeepSeek, Mistral, Groq, Together AI, Fireworks AI, OpenRouter, MiniMax, and Ollama.</p><p>Run <code>/provider</code>, choose a provider, and enter its key. The input masks typed and pasted text. Press Enter to save the key and connect. Press Escape to cancel. Ollama can connect to your server without an API key.</p><p>The provider controls model access and billing. The official Codex and Copilot adapters run the provider's agent engine. They do not use Handwork's native tools, sessions, or permission checks.</p><a class="text-link" href="https://github.com/loveconnor/handwork#providers-and-authentication">Read the authentication reference <span aria-hidden="true">↗</span></a></section>
+
+      <section id="first-task" class="doc-section"><h2><span>03</span>First task</h2><p>Name the change and the checks you want Handwork to run.</p><pre class="prompt-example"><code>Fix the failing parser test. Keep the change focused.
+Run the parser tests and report the result.</code></pre><p>Use <code>ask</code> to run one request without opening the interactive interface.</p><pre><code>handwork ask "Explain this project's entry points"
+handwork ask --json "Review the current changes without editing files"</code></pre><p>The second prompt tells the model not to edit. It does not change tool permissions. Check the diff and command results after every coding task.</p></section>
+
+      <section id="permissions" class="doc-section"><h2><span>04</span>Permissions and data</h2><div class="table-scroll"><table><thead><tr><th scope="col">Mode</th><th scope="col">Behavior</th></tr></thead><tbody><tr><th scope="row"><code>ask</code></th><td>Prompts before sensitive actions that no rule has approved.</td></tr><tr><th scope="row"><code>auto</code></th><td>Reviews sensitive actions that no rule has approved. This is the default.</td></tr><tr><th scope="row"><code>full-access</code></th><td>Turns off Handwork's permission checks.</td></tr></tbody></table></div><p>Run <code>/permissions ask</code> to require prompts. Use <code>/allowlist</code> to manage saved rules. If auto mode returns a caution, Handwork holds the action instead of opening a prompt.</p><div class="note"><strong>Cloud providers receive task data.</strong><p>A request can include your prompt, code excerpts, tool results, and conversation history. Read the provider's data policy before sending private code. Handwork stores native API keys in files that only your account can read. It does not encrypt them at rest.</p></div><p>Permission checks do not isolate the process from the operating system. They also do not prove that generated code is correct.</p></section>
+
+      <section id="commands" class="doc-section"><h2><span>05</span>Commands</h2><div class="table-scroll"><table><thead><tr><th scope="col">Command</th><th scope="col">Action</th></tr></thead><tbody><tr><th scope="row"><code>/help</code></th><td>Lists commands.</td></tr><tr><th scope="row"><code>/provider</code></th><td>Connects or switches providers.</td></tr><tr><th scope="row"><code>/model</code></th><td>Chooses a model and reasoning effort.</td></tr><tr><th scope="row"><code>/new</code></th><td>Starts a session.</td></tr><tr><th scope="row"><code>/resume</code></th><td>Opens a saved session.</td></tr><tr><th scope="row"><code>/compact</code></th><td>Summarizes the conversation in a new context window.</td></tr><tr><th scope="row"><code>/skills</code></th><td>Lists and manages skills.</td></tr><tr><th scope="row"><code>/mcp</code></th><td>Manages MCP servers and project trust.</td></tr><tr><th scope="row"><code>/quit</code></th><td>Exits Handwork.</td></tr></tbody></table></div><p>Run <code>handwork --help</code> in your shell for the full command list. Run <code>handwork doctor</code> to check the local setup. Run <code>handwork update</code> to update a global npm installation, then restart Handwork.</p></section>
+
+      <section id="sessions" class="doc-section"><h2><span>06</span>Saved sessions</h2><pre><code>handwork sessions
+handwork session resume last</code></pre><p>Handwork stores native sessions in <code>~/.handwork/sessions</code>. A resumed session restores the conversation. It does not restore old file contents or running programs. Check the workspace after an interrupted task.</p><p>Run <code>handwork ask --no-save "Your task"</code> when you do not want to save the request. Provider runtime sessions use the provider's storage.</p></section>
+
+      <section id="source" class="doc-section"><h2><span>07</span>Build from source</h2><p>The repository uses Zig 0.16.0.</p><pre><code>git clone https://github.com/loveconnor/handwork.git
+cd handwork
+zig build
+./zig-out/bin/handwork --help</code></pre><p>The native agent can call model APIs without the JavaScript adapters. The official runtime adapters also need <code>npm ci</code> and Node.js 22.12 or newer, or Node.js 20.19 or newer. The project does not claim support for every source build target.</p><a class="text-link" href="https://github.com/loveconnor/handwork#development-and-verification">Read the development reference <span aria-hidden="true">↗</span></a></section>
+    </div>
+  </div>
+</main>

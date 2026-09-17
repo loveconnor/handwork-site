@@ -1,0 +1,112 @@
+<main id="main">
+  <section class="hero">
+    <div class="hero-marquee">
+      <div class="hero-warp" aria-hidden="true"></div>
+      <div class="wrap hero-brand">
+    <h1 class="sr-only">Handwork</h1>
+    <svg class="pixel-logo" viewBox="0 0 68 9.08" aria-hidden="true" focusable="false"><path transform="scale(1 1.8)" d="M0 0h2v1.04H0z M5 0h2v1.04H5z M9 0h5v1.04H9z M16 0h3v1.04h-3z M23 0h2v1.04h-2z M26 0h6v1.04h-6z M34 0h2v1.04h-2z M41 0h2v1.04h-2z M45 0h6v1.04h-6z M53 0h6v1.04h-6z M61 0h2v1.04h-2z M66 0h2v1.04h-2z M0 1h2v1.04H0z M5 1h2v1.04H5z M8 1h2v1.04H8z M13 1h2v1.04h-2z M16 1h4v1.04h-4z M23 1h2v1.04h-2z M26 1h2v1.04h-2z M31 1h2v1.04h-2z M34 1h2v1.04h-2z M41 1h2v1.04h-2z M44 1h2v1.04h-2z M50 1h2v1.04h-2z M53 1h2v1.04h-2z M58 1h2v1.04h-2z M61 1h2v1.04h-2z M65 1h2v1.04h-2z M0 2h7v1.04H0z M8 2h7v1.04H8z M16 2h2v1.04h-2z M19 2h2v1.04h-2z M23 2h2v1.04h-2z M26 2h2v1.04h-2z M31 2h2v1.04h-2z M34 2h2v1.04h-2z M38 2h1v1.04h-1z M41 2h2v1.04h-2z M44 2h2v1.04h-2z M50 2h2v1.04h-2z M53 2h6v1.04h-6z M61 2h5v1.04h-5z M0 3h2v1.04H0z M5 3h2v1.04H5z M8 3h2v1.04H8z M13 3h2v1.04h-2z M16 3h2v1.04h-2z M20 3h2v1.04h-2z M23 3h2v1.04h-2z M26 3h2v1.04h-2z M31 3h2v1.04h-2z M34 3h2v1.04h-2z M37 3h3v1.04h-3z M41 3h2v1.04h-2z M44 3h2v1.04h-2z M50 3h2v1.04h-2z M53 3h2v1.04h-2z M58 3h2v1.04h-2z M61 3h2v1.04h-2z M65 3h2v1.04h-2z M0 4h2v1.04H0z M5 4h2v1.04H5z M8 4h2v1.04H8z M13 4h2v1.04h-2z M16 4h2v1.04h-2z M21 4h4v1.04h-4z M26 4h6v1.04h-6z M35 4h3v1.04h-3z M39 4h3v1.04h-3z M45 4h6v1.04h-6z M53 4h2v1.04h-2z M58 4h2v1.04h-2z M61 4h2v1.04h-2z M66 4h2v1.04h-2z"/></svg>
+    <p class="welcome-line">v{{HANDWORK_VERSION}} <span>·</span> made by <a href="https://connorlove.com">Connor Love</a></p>
+      </div>
+    </div>
+    <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p>A coding agent for the terminal, written in Zig.</p>
+      <p>Give it a task in a project. It reads the code, makes changes, runs your checks, and reports what changed.</p>
+    </div>
+    <div class="hero-actions">
+      <div class="install-command"><span aria-hidden="true">%</span><code>npm install -g handwork</code><button class="copy-button" data-copy="npm install -g handwork" aria-label="Copy install command"><svg class="copy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V4H4v12h4"/></svg><svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg></button></div>
+      <a class="text-link" href="/docs/">Read the Docs</a>
+    </div>
+    <span id="copy-status" class="copy-feedback" role="status" aria-live="polite"></span>
+    <p class="install-note">The npm package supports macOS on Apple Silicon. You can build other targets from source.</p>
+    </div>
+  </section>
+
+  <section class="process-section" id="in-action" aria-labelledby="action-heading">
+    <div class="wrap process-intro">
+      <div class="section-heading"><h2 id="action-heading"><span aria-hidden="true">&gt;</span> A task in Handwork</h2><p>This recording uses Handwork 0.0.9 in light mode. The project has a broken slug function and two tests.</p></div>
+      <ol class="process-steps">
+        <li><span>01</span><div><strong>Describe the fix</strong><p>The prompt names the required behavior and test command.</p></div></li>
+        <li><span>02</span><div><strong>Review the work</strong><p>Handwork reads the files, explains the bug, and edits one line.</p></div></li>
+        <li><span>03</span><div><strong>Check the result</strong><p>Handwork runs <code>node test.js</code>. Both tests pass.</p></div></li>
+      </ol>
+    </div>
+
+    <div class="demo-wrap">
+      <div class="demo-tabs" role="tablist" aria-label="Recorded Handwork task"><button id="inspect-tab" role="tab" aria-selected="true" aria-controls="inspect-panel" tabindex="0" data-demo="inspect"><span>01</span> Inspect</button><button id="verify-tab" role="tab" aria-selected="false" aria-controls="verify-panel" tabindex="-1" data-demo="verify"><span>02</span> Edit and test</button><span class="tab-indicator" aria-hidden="true"></span></div>
+      <div class="capture-shell">
+        <div id="inspect-panel" role="tabpanel" aria-labelledby="inspect-tab"><img class="demo-image" src="/media/inspect.png" data-gif="/media/inspect.gif" data-poster="/media/inspect.png" width="1100" height="650" alt="A recording of the Handwork terminal app. The user enters a task. Handwork reads slug.js and test.js, then explains the bug."></div>
+        <div id="verify-panel" role="tabpanel" aria-labelledby="verify-tab" hidden><img class="demo-image" src="/media/verify.png" data-gif="/media/verify.gif" data-poster="/media/verify.png" width="1100" height="650" alt="A recording of the Handwork terminal app. Handwork edits slug.js, runs node test.js, and reports that the two tests passed."></div>
+      </div>
+      <div class="capture-controls"><p><span class="mobile-pan-note">Open the full-size viewer to read the terminal output. </span>Recorded in the interactive terminal app. Idle waits are shortened. The terminal output has not been rewritten.</p><div class="capture-actions"><button class="motion-toggle" id="motion-toggle" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="icon-play" d="M5 3.5v9l7-4.5z" fill="currentColor"/><path class="icon-pause" d="M4.5 3.5h2.25v9H4.5zm4.75 0h2.25v9H9.25z" fill="currentColor"/></svg><span>Play recording</span></button><a id="demo-open" href="/media/inspect.png">View full-size recording</a></div></div>
+    </div>
+
+    <dialog class="recording-viewer" id="recording-viewer" aria-labelledby="recording-viewer-title" aria-describedby="recording-viewer-help">
+      <div class="recording-viewer-shell">
+        <header class="recording-viewer-header">
+          <div class="recording-viewer-heading"><p>Recorded task</p><h2 id="recording-viewer-title">Inspect</h2></div>
+          <div class="recording-viewer-actions"><button class="motion-toggle recording-viewer-play" id="recording-viewer-play" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="icon-play" d="M5 3.5v9l7-4.5z" fill="currentColor"/><path class="icon-pause" d="M4.5 3.5h2.25v9H4.5zm4.75 0h2.25v9H9.25z" fill="currentColor"/></svg><span>Play recording</span></button><button class="recording-viewer-close" id="recording-viewer-close" type="button" aria-label="Close full-size recording"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="m4 4 8 8M12 4l-8 8"/></svg></button></div>
+        </header>
+        <div class="recording-viewer-tabs" role="group" aria-label="Recording step"><button type="button" data-viewer-demo="inspect" aria-pressed="true"><span>01</span> Inspect</button><button type="button" data-viewer-demo="verify" aria-pressed="false"><span>02</span> Edit and test</button></div>
+        <div class="recording-viewer-content" id="recording-viewer-content" role="region" aria-label="Full-size terminal recording" tabindex="0"><img class="recording-viewer-image" id="recording-viewer-image" src="/media/inspect.png" width="1100" height="650" alt="A recording of the Handwork terminal app. The user enters a task. Handwork reads slug.js and test.js, then explains the bug."></div>
+        <p class="recording-viewer-help" id="recording-viewer-help">Scroll to inspect the recording at full size.</p>
+      </div>
+    </dialog>
+
+    <div class="wrap run-result">
+      <div><span>1</span><p>file changed</p></div><div><span>5</span><p>tool calls</p></div><div><span>2</span><p>tests passed</p></div><div><span>0</span><p>test exit code</p></div>
+    </div>
+    <details class="wrap transcript"><summary><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg><span>Read the task and result</span></summary><p>The task asked Handwork to trim the input, lowercase it, and replace one or more spaces with one hyphen. Handwork changed <code>slug.js</code> and ran <code>node test.js</code>. The command printed <code>2 tests passed</code> and exited with code 0.</p></details>
+  </section>
+
+  <section class="wrap benchmark-section" id="benchmarks" aria-labelledby="benchmark-heading">
+    <div class="section-heading benchmark-heading"><p class="section-number">02</p><div><h2 id="benchmark-heading">Recorded benchmark results</h2><p>The repository has three coding task pilots. Each attempt used a fresh workspace, rotated agent order, and an independent verifier.</p></div></div>
+    <div class="benchmark-toolbar">
+      <div class="benchmark-task"><span id="task-select-label">Task</span><div class="custom-select"><button class="custom-select-trigger" id="task-select" type="button" role="combobox" aria-controls="task-options" aria-expanded="false" aria-haspopup="listbox" aria-labelledby="task-select-label task-select-value" data-value="search"><span id="task-select-value">Async search</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 6 4 4 4-4"/></svg></button><div class="custom-select-menu" id="task-options" role="listbox" aria-labelledby="task-select-label" hidden><div id="task-option-search" role="option" aria-selected="true" data-value="search"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 3 3 7-7"/></svg><span>Async search</span></div><div id="task-option-pagination" role="option" aria-selected="false" data-value="pagination"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 3 3 7-7"/></svg><span>Pagination</span></div><div id="task-option-cache" role="option" aria-selected="false" data-value="cache"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8 3 3 7-7"/></svg><span>Authorization and cache</span></div></div></div></div>
+      <span id="benchmark-budget">5 attempts per agent, 300 second limit</span>
+    </div>
+    <div class="table-scroll" role="region" aria-label="Coding task benchmark results" tabindex="0">
+      <table class="benchmark-table">
+        <caption class="sr-only" id="benchmark-caption">Async search, original interleaved series</caption>
+        <thead><tr><th scope="col">Agent</th><th scope="col">Complete fixes</th><th scope="col">Median time</th><th scope="col">Tool calls</th><th scope="col">Input tokens</th><th scope="col">Output tokens</th><th scope="col">Peak agent RSS</th></tr></thead>
+        <tbody id="benchmark-rows">
+          <tr class="handwork-row">
+            <th scope="row"><span class="agent-label"><img class="agent-logo" src="/favicon.svg" alt="" width="18" height="18"><span>handwork</span></span> <span class="row-tag">baseline</span></th>
+            <td class="metric-cell" data-label="Complete fixes" data-metric="fixes"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">5 / 5</span></span></td>
+            <td class="metric-cell" data-label="Median time" data-metric="time"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.735" aria-hidden="true"></span><span class="metric-value">58.7 s</span></span></td>
+            <td class="metric-cell" data-label="Mean tool calls" data-metric="toolCalls"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.685" aria-hidden="true"></span><span class="metric-value">12.2</span></span></td>
+            <td class="metric-cell" data-label="Mean input tokens" data-metric="inputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.743" aria-hidden="true"></span><span class="metric-value">58,877</span></span></td>
+            <td class="metric-cell" data-label="Mean output tokens" data-metric="outputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.581" aria-hidden="true"></span><span class="metric-value">1,111</span></span></td>
+            <td class="metric-cell" data-label="Peak agent RSS" data-metric="rss"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.055" aria-hidden="true"></span><span class="metric-value">41.8 MiB</span></span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="agent-label"><img class="agent-logo" src="/media/logos/opencode.svg" alt="" width="18" height="18"><span>OpenCode</span></span></th>
+            <td class="metric-cell" data-label="Complete fixes" data-metric="fixes"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">5 / 5</span></span></td>
+            <td class="metric-cell" data-label="Median time" data-metric="time"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">79.9 s</span></span></td>
+            <td class="metric-cell" data-label="Mean tool calls" data-metric="toolCalls"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">17.8</span></span></td>
+            <td class="metric-cell" data-label="Mean input tokens" data-metric="inputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.763" aria-hidden="true"></span><span class="metric-value">60,458</span></span></td>
+            <td class="metric-cell" data-label="Mean output tokens" data-metric="outputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">1,913</span></span></td>
+            <td class="metric-cell" data-label="Peak agent RSS" data-metric="rss"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">757.2 MiB</span></span></td>
+          </tr>
+          <tr>
+            <th scope="row"><span class="agent-label"><img class="agent-logo" src="/media/logos/openai.svg" alt="" width="18" height="18"><span>Codex</span></span></th>
+            <td class="metric-cell" data-label="Complete fixes" data-metric="fixes"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">5 / 5</span></span></td>
+            <td class="metric-cell" data-label="Median time" data-metric="time"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.412" aria-hidden="true"></span><span class="metric-value">32.9 s</span></span></td>
+            <td class="metric-cell" data-label="Mean tool calls" data-metric="toolCalls"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.281" aria-hidden="true"></span><span class="metric-value">5.0</span></span></td>
+            <td class="metric-cell" data-label="Mean input tokens" data-metric="inputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:1" aria-hidden="true"></span><span class="metric-value">79,195</span></span></td>
+            <td class="metric-cell" data-label="Mean output tokens" data-metric="outputTokens"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.358" aria-hidden="true"></span><span class="metric-value">684</span></span></td>
+            <td class="metric-cell" data-label="Peak agent RSS" data-metric="rss"><span class="metric-content"><span class="metric-bar" style="--bar-scale:.3" aria-hidden="true"></span><span class="metric-value">227.5 MiB</span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="benchmark-scale-note">Bars use the largest value in each column as 100%. Token and tool-call figures are means per attempt. Bar length shows magnitude, not an overall score.</p>
+    <p id="benchmark-result" class="benchmark-result" aria-live="polite">Handwork used less sampled agent memory. Codex had the lower median completion time.</p>
+    <div class="benchmark-notes"><p>The machine was an Apple M4 Pro with 24 GiB of memory and macOS 26.5.2. The runs used gpt-6-astra with low reasoning and a 272,000 token context limit.</p><p>The table reports frozen builds, not current releases. Time includes model inference, network requests, and tool execution. RSS excludes hosted model memory. Token counts are client-reported. Tool calls count native invocations, and one shell invocation can run multiple commands. These tests do not rank agents across other tasks.</p></div>
+    <a id="benchmark-source" class="text-link" href="https://github.com/loveconnor/handwork/blob/main/benchmarks/async-search/README.md">Read the method and source data <span aria-hidden="true">↗</span></a>
+    <noscript><p>Open the <a href="https://github.com/loveconnor/handwork#benchmarks">repository benchmark section</a> for the other tasks.</p></noscript>
+  </section>
+
+  <section class="wrap closing"><div><h2>Run Handwork in a project.</h2><p>Connect a provider with <code>/provider</code>, choose a model with <code>/model</code>, and enter a task.</p></div><a class="button" href="/docs/">Installation and setup</a></section>
+</main>
+<script src="/hero-warp.js" defer></script>

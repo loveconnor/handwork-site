@@ -1,0 +1,56 @@
+<main id="main" class="wrap about-page">
+  <header class="about-hero">
+    <p class="page-kicker">About</p>
+    <h1>Handwork is the coding harness around the model.</h1>
+    <p class="about-lead">I am Connor Love. I built Handwork to see how small and direct a terminal coding agent could be without giving up the tools needed for real project work.</p>
+  </header>
+
+  <div class="about-columns">
+    <section class="about-section" aria-labelledby="purpose-heading">
+      <p class="section-number">01</p>
+      <h2 id="purpose-heading">What a harness does</h2>
+      <div class="about-copy">
+        <p>The model supplies the reasoning. Handwork supplies the working environment around it. It gathers project context, sends requests to the model, turns tool calls into local actions, returns the results, and continues the task.</p>
+        <p>That environment includes the terminal interface, file and code search, edits, shell commands, permission reviews, project instructions, skills, MCP connections, subagents, and saved conversations.</p>
+        <p>Handwork's native path runs its own agent loop across several model providers. Its Codex and Copilot adapters run those providers' official agent engines inside the same terminal interface.</p>
+      </div>
+    </section>
+
+    <section class="about-section" aria-labelledby="motivation-heading">
+      <p class="section-number">02</p>
+      <h2 id="motivation-heading">Why I built it</h2>
+      <div class="about-copy">
+        <p>While using tools such as Codex and Claude Code, I noticed how much memory a coding session could keep resident. I wanted to find out how much of that local footprint was necessary and how much a smaller native client could avoid.</p>
+        <p>Memory was the starting point, not the only goal. A coding agent stays open for long sessions, runs many tools, and holds a growing conversation. I wanted quick startup, short waits between tool actions, and a terminal that stays responsive as the session grows.</p>
+        <p>I wrote the agent runtime and terminal in Zig for direct control over allocations, process management, and rendering. The JavaScript SDK remains available for applications that need their own interface, tools, or authentication.</p>
+      </div>
+    </section>
+
+    <section class="about-section" aria-labelledby="evidence-heading">
+      <p class="section-number">03</p>
+      <h2 id="evidence-heading">What I have measured</h2>
+      <div class="about-copy">
+        <p>In three small TypeScript pilots, frozen Handwork builds used 31.1 to 41.8 MiB of median peak agent RSS. Codex used 214.0 to 229.8 MiB, and OpenCode used 757.2 to 811.3 MiB. All three agents completed every recorded attempt.</p>
+        <p>Those numbers cover the local agent process tree, not the hosted model. Codex had the lower median completion time on all three tasks. Claude Code was not measured, so I do not make a numerical comparison against it.</p>
+        <p>The samples are small and do not rank the tools across other projects. The <a href="/#benchmarks">published pilots</a> include the machine, versions, prompts, methods, caveats, and source data.</p>
+      </div>
+    </section>
+
+    <section class="about-section" aria-labelledby="release-heading">
+      <p class="section-number">04</p>
+      <h2 id="release-heading">Current release <span class="row-tag">{{HANDWORK_VERSION}}</span></h2>
+      <div class="about-copy">
+        <p>The npm package supports macOS on Apple Silicon. The repository includes source builds, a JavaScript SDK, and official Codex and Copilot runtime adapters.</p>
+        <p>Handwork does not replace the model. The quality of a result still depends on the selected model, the task, the project context, and the checks used to verify the work.</p>
+        <p>Handwork can change files and run programs. Check the permission mode before a task. Review the diff and test results after it finishes.</p>
+      </div>
+    </section>
+  </div>
+
+  <section class="about-resources" aria-labelledby="resources-heading">
+    <p class="section-number">05</p>
+    <h2 id="resources-heading">Links</h2>
+    <p>Read the code, report an issue, or learn more about the person behind Handwork.</p>
+    <nav class="about-links" aria-label="About resources"><a href="https://github.com/loveconnor/handwork"><span>Source code</span><span aria-hidden="true">↗</span></a><a href="https://github.com/loveconnor/handwork/issues"><span>Issues and feedback</span><span aria-hidden="true">↗</span></a><a href="https://connorlove.com"><span>Connor Love</span><span aria-hidden="true">↗</span></a></nav>
+  </section>
+</main>
