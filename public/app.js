@@ -235,9 +235,147 @@ if (docsSections.length) {
 }
 
 const datasets = {
-  search: { label: 'Async search', attempts: 5, budget: 300, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 47.177, toolCalls: 7.666666666666667, inputTokens: 45515.333333333336, outputTokens: 1077.6666666666667, rss: 25.09375 }, { fixes: 5, time: 79.9, toolCalls: 17.8, inputTokens: 60457.6, outputTokens: 1913.4, rss: 757.2 }, { fixes: 5, time: 32.9, toolCalls: 5, inputTokens: 79194.8, outputTokens: 684.2, rss: 227.5 }], path: 'async-search', note: 'Handwork used less sampled agent memory. Codex had the lower median completion time.' },
-  pagination: { label: 'Pagination, corrected series', attempts: 3, budget: 300, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 28.089, toolCalls: 5.666666666666667, inputTokens: 33596.666666666664, outputTokens: 496.3333333333333, rss: 23.109375 }, { fixes: 3, time: 34.8, toolCalls: 9, inputTokens: 36347.7, outputTokens: 703.7, rss: 762.5 }, { fixes: 3, time: 27.2, toolCalls: 5, inputTokens: 59443.7, outputTokens: 564.7, rss: 229.8 }], path: 'fixed-budget', note: 'The table uses the corrected series. The project withdrew an earlier series because the benchmark sandbox failed. Codex had the lower median time. Handwork used less sampled memory.' },
-  cache: { label: 'Authorization and cache isolation', attempts: 5, budget: 600, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 79.564, toolCalls: 9.333333333333334, inputTokens: 67587.33333333333, outputTokens: 2036, rss: 27.546875 }, { fixes: 5, time: 200.3, toolCalls: 40.8, inputTokens: 153491.8, outputTokens: 5303, rss: 811.3 }, { fixes: 5, time: 84.3, toolCalls: 5.4, inputTokens: 119924.6, outputTokens: 2122, rss: 214 }], path: 'tenant-cache', note: 'Handwork used less sampled agent memory. These small samples do not support a general speed claim.' }
+  "bullmq": {
+    "label": "BullMQ worker recovery",
+    "attempts": 5,
+    "budget": 1800,
+    "build": "ReleaseFast",
+    "source": "bullmq-recovery",
+    "values": [
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 251.485,
+        "toolCalls": 25.8,
+        "inputTokens": 477491.2,
+        "outputTokens": 2939,
+        "rss": 30.640625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 446.917,
+        "toolCalls": 30.8,
+        "inputTokens": 539156,
+        "outputTokens": 4461.8,
+        "rss": 778.71875
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 231.599,
+        "toolCalls": 20.2,
+        "inputTokens": 623398.6,
+        "outputTokens": 3643.6,
+        "rss": 205.84375
+      }
+    ]
+  },
+  "search": {
+    "label": "Async search",
+    "attempts": 5,
+    "budget": 600,
+    "build": "ReleaseFast",
+    "values": [
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 40.622,
+        "toolCalls": 5,
+        "inputTokens": 37086.6,
+        "outputTokens": 991.8,
+        "rss": 23.65625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 55.151,
+        "toolCalls": 15.8,
+        "inputTokens": 78781.2,
+        "outputTokens": 1138.8,
+        "rss": 790.0625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 32.841,
+        "toolCalls": 4.2,
+        "inputTokens": 82758.2,
+        "outputTokens": 763.4,
+        "rss": 234.015625
+      }
+    ]
+  },
+  "pagination": {
+    "label": "Pagination",
+    "attempts": 5,
+    "budget": 600,
+    "build": "ReleaseFast",
+    "values": [
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 25.376,
+        "toolCalls": 5,
+        "inputTokens": 27880.2,
+        "outputTokens": 462,
+        "rss": 21.90625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 41.656,
+        "toolCalls": 11,
+        "inputTokens": 42015.8,
+        "outputTokens": 734.4,
+        "rss": 748.1875
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 27.981,
+        "toolCalls": 3.4,
+        "inputTokens": 66153.2,
+        "outputTokens": 566.4,
+        "rss": 237.671875
+      }
+    ]
+  },
+  "cache": {
+    "label": "Authorization and cache isolation",
+    "attempts": 5,
+    "budget": 600,
+    "build": "ReleaseFast",
+    "values": [
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 86.128,
+        "toolCalls": 8.4,
+        "inputTokens": 71894.8,
+        "outputTokens": 2136.2,
+        "rss": 27.265625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 121.552,
+        "toolCalls": 24.2,
+        "inputTokens": 115747.8,
+        "outputTokens": 3056.8,
+        "rss": 785.3125
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 83.48,
+        "toolCalls": 6.2,
+        "inputTokens": 129680.2,
+        "outputTokens": 2236,
+        "rss": 235.09375
+      }
+    ]
+  }
 };
 const benchmarkMetricKeys = ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss'];
 const taskSelect = document.querySelector('#task-select');
@@ -250,7 +388,7 @@ function updateBenchmark(value) {
   const maxima = Object.fromEntries(benchmarkMetricKeys.map(key => [key, Math.max(...data.values.map(agent => agent[key]))]));
   const rows = [...document.querySelectorAll('#benchmark-rows tr')];
   document.querySelector('#benchmark-caption').textContent = data.label;
-  document.querySelector('#benchmark-budget').textContent = `Handwork: 3 attempts, 600 second limit; other agents: ${data.attempts} attempts, ${data.budget} second limit`;
+  document.querySelector('#benchmark-budget').textContent = `${data.attempts} attempts per agent, ${data.budget} second limit per attempt`;
   data.values.forEach((agent, index) => {
     const cells = rows[index].children;
     const buildTag = cells[0].querySelector('.row-tag');
@@ -266,11 +404,13 @@ function updateBenchmark(value) {
     benchmarkMetricKeys.forEach(key => {
       const cell = rows[index].querySelector(`[data-metric="${key}"]`);
       cell.querySelector('.metric-value').textContent = formatted[key];
-      cell.querySelector('.metric-bar').style.setProperty('--bar-scale', String(agent[key] / maxima[key]));
+      const scale = key === 'fixes' ? agent.fixes / (agent.attempts ?? data.attempts) : agent[key] / maxima[key];
+      cell.querySelector('.metric-bar').style.setProperty('--bar-scale', String(scale));
     });
   });
-  document.querySelector('#benchmark-result').textContent = data.note;
-  document.querySelector('#benchmark-source').href = `https://github.com/loveconnor/handwork/blob/main/benchmarks/${data.path}/README.md`;
+  const source = data.source ?? 'fair-comparison';
+  document.querySelector('#benchmark-source').href = `/benchmarks/${source}/REPORT.md`;
+  document.querySelector('#benchmark-download').href = `/benchmarks/${source}/summary.json`;
 }
 function setActiveTaskOption(option) {
   activeTaskOption?.classList.remove('is-active');

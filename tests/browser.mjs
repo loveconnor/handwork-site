@@ -115,9 +115,10 @@ try {
   await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-open', 'Browser Back closes the viewer and restores focus');
   for (const [option, time, calls, input, output, memory, attempts, source] of [
-    ['Pagination', '28.1 s', '5.7', '33,597', '496', '23.1 MiB', '3 attempts', 'fixed-budget'],
-    ['Authorization and cache', '79.6 s', '9.3', '67,587', '2,036', '27.5 MiB', '3 attempts', 'tenant-cache'],
-    ['Async search', '47.2 s', '7.7', '45,515', '1,078', '25.1 MiB', '3 attempts', 'async-search']
+    ["Pagination","25.4 s","5.0","27,880","462","21.9 MiB","5 attempts","fair-comparison"],
+    ["Authorization and cache","86.1 s","8.4","71,895","2,136","27.3 MiB","5 attempts","fair-comparison"],
+    ["BullMQ worker recovery","251.5 s","25.8","477,491","2,939","30.6 MiB","1800 second limit","bullmq-recovery"],
+    ["Async search","40.6 s","5.0","37,087","992","23.7 MiB","5 attempts","fair-comparison"]
   ]) {
     await page.locator('#task-select').click();
     assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
@@ -128,10 +129,13 @@ try {
     for (const expected of [time, calls, input, output, memory]) assert.ok(row.includes(expected), `${option} includes ${expected}`);
     assert.ok((await page.locator('#benchmark-budget').textContent()).includes(attempts));
     assert.ok((await page.locator('#benchmark-source').getAttribute('href')).includes(source));
+    assert.ok((await page.locator('#benchmark-download').getAttribute('href')).includes(source));
+    assert.equal((await context.request.get(origin + await page.locator('#benchmark-source').getAttribute('href'))).status(), 200);
     const metricScales = await page.locator('.metric-cell').evaluateAll(cells => cells.reduce((groups, cell) => {
       (groups[cell.dataset.metric] ||= []).push(Number(getComputedStyle(cell.querySelector('.metric-bar')).getPropertyValue('--bar-scale')));
       return groups;
     }, {}));
+    assert.deepEqual(metricScales.fixes, {"Pagination":[1,1,1],"Authorization and cache":[1,1,1],"Async search":[1,1,1],"BullMQ worker recovery":[1,1,1]}[option], 'Completion bars show the measured pass rates');
     for (const metric of ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss']) {
       assert.equal(metricScales[metric].length, 3, `${metric} compares all three agents`);
       assert.equal(Math.max(...metricScales[metric]), 1, `${metric} scales against its largest value`);
@@ -143,7 +147,7 @@ try {
   assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
   await page.keyboard.press('End');
   await page.keyboard.press('Enter');
-  assert.equal(await page.locator('#task-select-value').textContent(), 'Authorization and cache');
+  assert.equal(await page.locator('#task-select-value').textContent(), 'BullMQ worker recovery');
   assert.equal(await page.locator('.metric-bar').first().evaluate(bar => getComputedStyle(bar, '::after').transitionProperty), 'transform', 'Metric bars animate with transform');
   await page.waitForTimeout(240);
   await page.keyboard.press('ArrowDown');
@@ -184,7 +188,7 @@ try {
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
-  assert.ok((await staticPage.locator('table').textContent()).includes('25.1 MiB'));
+  assert.ok((await staticPage.locator('table').textContent()).includes('23.7 MiB'));
   assert.ok(await staticPage.locator('#inspect-panel img').isVisible());
   assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
   assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);

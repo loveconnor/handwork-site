@@ -284,6 +284,7 @@ thead th { background: var(--surface); color: var(--muted); font-size: 12px; }
 .row-tag { margin-left: 7px; padding: 2px 5px; border: 1px solid var(--line-dark); border-radius: 2px; color: var(--muted); font-size: 12px; font-weight: 400; }
 .benchmark-scale-note { margin-top: 10px; color: var(--faint); font-size: 11px; }
 .benchmark-result { margin-top: 24px; color: var(--text); font-family: var(--body-font); font-size: 15px; }
+.benchmark-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 32px; }
 .benchmark-notes { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 18px 0; }
 .benchmark-notes p { color: var(--faint); font-family: var(--body-font); font-size: 13px; line-height: 1.55; }
 .benchmark-notes p + p { padding-left: 32px; border-left: 1px solid var(--line-dark); }
