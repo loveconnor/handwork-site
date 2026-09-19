@@ -235,9 +235,9 @@ if (docsSections.length) {
 }
 
 const datasets = {
-  search: { label: 'Async search, original interleaved series', attempts: 5, budget: 300, build: 'baseline', values: [{ fixes: 5, time: 58.7, toolCalls: 12.2, inputTokens: 58876.8, outputTokens: 1110.8, rss: 41.8 }, { fixes: 5, time: 79.9, toolCalls: 17.8, inputTokens: 60457.6, outputTokens: 1913.4, rss: 757.2 }, { fixes: 5, time: 32.9, toolCalls: 5, inputTokens: 79194.8, outputTokens: 684.2, rss: 227.5 }], path: 'async-search', note: 'Handwork used less sampled agent memory. Codex had the lower median completion time.' },
-  pagination: { label: 'Pagination, corrected series', attempts: 3, budget: 300, build: '0.0.8', values: [{ fixes: 3, time: 30.1, toolCalls: 7.3, inputTokens: 30239.3, outputTokens: 526.3, rss: 34.5 }, { fixes: 3, time: 34.8, toolCalls: 9, inputTokens: 36347.7, outputTokens: 703.7, rss: 762.5 }, { fixes: 3, time: 27.2, toolCalls: 5, inputTokens: 59443.7, outputTokens: 564.7, rss: 229.8 }], path: 'fixed-budget', note: 'The table uses the corrected series. The project withdrew an earlier series because the benchmark sandbox failed. Codex had the lower median time. Handwork used less sampled memory.' },
-  cache: { label: 'Authorization and cache isolation', attempts: 5, budget: 600, build: 'updated', values: [{ fixes: 5, time: 85.4, toolCalls: 19.6, inputTokens: 59543, outputTokens: 2128.4, rss: 31.1 }, { fixes: 5, time: 200.3, toolCalls: 40.8, inputTokens: 153491.8, outputTokens: 5303, rss: 811.3 }, { fixes: 5, time: 84.3, toolCalls: 5.4, inputTokens: 119924.6, outputTokens: 2122, rss: 214 }], path: 'tenant-cache', note: 'This task used a separate, updated Handwork build. The one second difference between Handwork and Codex does not support a speed claim.' }
+  search: { label: 'Async search', attempts: 5, budget: 300, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 47.177, toolCalls: 7.666666666666667, inputTokens: 45515.333333333336, outputTokens: 1077.6666666666667, rss: 25.09375 }, { fixes: 5, time: 79.9, toolCalls: 17.8, inputTokens: 60457.6, outputTokens: 1913.4, rss: 757.2 }, { fixes: 5, time: 32.9, toolCalls: 5, inputTokens: 79194.8, outputTokens: 684.2, rss: 227.5 }], path: 'async-search', note: 'Handwork used less sampled agent memory. Codex had the lower median completion time.' },
+  pagination: { label: 'Pagination, corrected series', attempts: 3, budget: 300, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 28.089, toolCalls: 5.666666666666667, inputTokens: 33596.666666666664, outputTokens: 496.3333333333333, rss: 23.109375 }, { fixes: 3, time: 34.8, toolCalls: 9, inputTokens: 36347.7, outputTokens: 703.7, rss: 762.5 }, { fixes: 3, time: 27.2, toolCalls: 5, inputTokens: 59443.7, outputTokens: 564.7, rss: 229.8 }], path: 'fixed-budget', note: 'The table uses the corrected series. The project withdrew an earlier series because the benchmark sandbox failed. Codex had the lower median time. Handwork used less sampled memory.' },
+  cache: { label: 'Authorization and cache isolation', attempts: 5, budget: 600, build: 'ReleaseFast', values: [{ attempts: 3, fixes: 3, time: 79.564, toolCalls: 9.333333333333334, inputTokens: 67587.33333333333, outputTokens: 2036, rss: 27.546875 }, { fixes: 5, time: 200.3, toolCalls: 40.8, inputTokens: 153491.8, outputTokens: 5303, rss: 811.3 }, { fixes: 5, time: 84.3, toolCalls: 5.4, inputTokens: 119924.6, outputTokens: 2122, rss: 214 }], path: 'tenant-cache', note: 'Handwork used less sampled agent memory. These small samples do not support a general speed claim.' }
 };
 const benchmarkMetricKeys = ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss'];
 const taskSelect = document.querySelector('#task-select');
@@ -250,13 +250,13 @@ function updateBenchmark(value) {
   const maxima = Object.fromEntries(benchmarkMetricKeys.map(key => [key, Math.max(...data.values.map(agent => agent[key]))]));
   const rows = [...document.querySelectorAll('#benchmark-rows tr')];
   document.querySelector('#benchmark-caption').textContent = data.label;
-  document.querySelector('#benchmark-budget').textContent = `${data.attempts} attempts per agent, ${data.budget} second limit`;
+  document.querySelector('#benchmark-budget').textContent = `Handwork: 3 attempts, 600 second limit; other agents: ${data.attempts} attempts, ${data.budget} second limit`;
   data.values.forEach((agent, index) => {
     const cells = rows[index].children;
     const buildTag = cells[0].querySelector('.row-tag');
     if (buildTag) buildTag.textContent = data.build;
     const formatted = {
-      fixes: `${agent.fixes} / ${data.attempts}`,
+      fixes: `${agent.fixes} / ${agent.attempts ?? data.attempts}`,
       time: `${agent.time.toFixed(1)} s`,
       toolCalls: agent.toolCalls.toFixed(1),
       inputTokens: Math.round(agent.inputTokens).toLocaleString('en-US'),

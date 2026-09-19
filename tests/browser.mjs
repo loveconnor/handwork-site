@@ -115,9 +115,9 @@ try {
   await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-open', 'Browser Back closes the viewer and restores focus');
   for (const [option, time, calls, input, output, memory, attempts, source] of [
-    ['Pagination', '30.1 s', '7.3', '30,239', '526', '34.5 MiB', '3 attempts', 'fixed-budget'],
-    ['Authorization and cache', '85.4 s', '19.6', '59,543', '2,128', '31.1 MiB', '5 attempts', 'tenant-cache'],
-    ['Async search', '58.7 s', '12.2', '58,877', '1,111', '41.8 MiB', '5 attempts', 'async-search']
+    ['Pagination', '28.1 s', '5.7', '33,597', '496', '23.1 MiB', '3 attempts', 'fixed-budget'],
+    ['Authorization and cache', '79.6 s', '9.3', '67,587', '2,036', '27.5 MiB', '3 attempts', 'tenant-cache'],
+    ['Async search', '47.2 s', '7.7', '45,515', '1,078', '25.1 MiB', '3 attempts', 'async-search']
   ]) {
     await page.locator('#task-select').click();
     assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
@@ -184,7 +184,7 @@ try {
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
-  assert.ok((await staticPage.locator('table').textContent()).includes('41.8 MiB'));
+  assert.ok((await staticPage.locator('table').textContent()).includes('25.1 MiB'));
   assert.ok(await staticPage.locator('#inspect-panel img').isVisible());
   assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
   assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);

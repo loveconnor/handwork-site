@@ -85,7 +85,7 @@ test('GIF assets come from the recorded terminal stream', async () => {
 });
 test('benchmark baseline and limitations are rendered without JavaScript', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8');
-  for (const value of ['58.7 s', '41.8 MiB', '79.9 s', '757.2 MiB', '32.9 s', '227.5 MiB', 'frozen builds', 'do not rank agents']) assert.ok(html.toLowerCase().includes(value.toLowerCase()), value);
+  for (const value of ['47.2 s', '25.1 MiB', '79.9 s', '757.2 MiB', '32.9 s', '227.5 MiB', 'frozen builds', 'do not rank agents']) assert.ok(html.toLowerCase().includes(value.toLowerCase()), value);
   assert.equal((html.match(/data-metric="fixes"/g) || []).length, 3, 'every completed-fixes value has a comparison bar');
   assert.equal((html.match(/data-metric="time"/g) || []).length, 3, 'every median-time value has a comparison bar');
   assert.equal((html.match(/data-metric="toolCalls"/g) || []).length, 3, 'every tool-call value has a comparison bar');
