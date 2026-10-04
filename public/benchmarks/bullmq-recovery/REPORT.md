@@ -57,3 +57,7 @@ This is one locally authored task in a real repository, not a public benchmark s
 - opencode: `16c960ba77421da11b53e785f359b73f328a86118b48feb4af143db5d9afb198`
 - codex: `805f2102d573c580d8cad2fc774b81837e68f7e9bdd1adb559d67801bbc1f9bd`
 - codex-code-mode-host: `685d71198d94d06a886c8edfc0fa02aa72efb32bbc5bfafe1210b96b1abd361a`
+
+## Claude Code addition — October 4, 2026
+
+Claude Code was added in a separate five-attempt series using Opus 5.5 at medium effort. The existing results above used GPT-6 Astra at low effort and remain unchanged. These are different models and run dates, so the combined table does not isolate harness performance. [Read the Claude Code method and all attempts](/benchmarks/claude-code/REPORT.md).

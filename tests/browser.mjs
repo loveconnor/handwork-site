@@ -1,9 +1,11 @@
 import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { root } from '../scripts/build.mjs';
+const claudeSummary = JSON.parse(await readFile(new URL('../public/benchmarks/claude-code/summary.json', import.meta.url), 'utf8'));
+const taskKeys = { 'Pagination': 'pagination', 'Authorization and cache': 'tenant-cache', 'Async search': 'search', 'BullMQ worker recovery': 'bullmq' };
 const port = 14321;
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn(process.execPath, ['scripts/server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port) }, stdio: ['ignore', 'pipe', 'inherit'] });
@@ -135,11 +137,23 @@ try {
       (groups[cell.dataset.metric] ||= []).push(Number(getComputedStyle(cell.querySelector('.metric-bar')).getPropertyValue('--bar-scale')));
       return groups;
     }, {}));
-    assert.deepEqual(metricScales.fixes, {"Pagination":[1,1,1],"Authorization and cache":[1,1,1],"Async search":[1,1,1],"BullMQ worker recovery":[1,1,1]}[option], 'Completion bars show the measured pass rates');
+    const claude = claudeSummary[taskKeys[option]];
+    assert.deepEqual(metricScales.fixes, [1, 1, 1, claude.successes / claude.attempts], 'Completion bars show the measured pass rates');
+    const claudeRow = page.getByRole('row', { name: /Claude Code/ });
+    const claudeText = await claudeRow.textContent();
+    const expectedClaude = [
+      `${claude.successes} / ${claude.attempts}`,
+      claude.median_success_seconds === null ? '—' : `${claude.median_success_seconds.toFixed(1)} s`,
+      claude.mean_tool_calls.toFixed(1),
+      Math.round(claude.mean_input_tokens).toLocaleString('en-US'),
+      Math.round(claude.mean_output_tokens).toLocaleString('en-US'),
+      `${claude.median_peak_mib.toFixed(1)} MiB`
+    ];
+    for (const expected of expectedClaude) assert.ok(claudeText.includes(expected), `${option}: Claude Code includes ${expected}`);
     for (const metric of ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss']) {
-      assert.equal(metricScales[metric].length, 3, `${metric} compares all three agents`);
+      assert.equal(metricScales[metric].length, 4, `${metric} compares all four agents`);
       assert.equal(Math.max(...metricScales[metric]), 1, `${metric} scales against its largest value`);
-      assert.ok(metricScales[metric].every(scale => scale > 0 && scale <= 1), `${metric} bars stay within their tracks`);
+      assert.ok(metricScales[metric].every(scale => scale >= 0 && scale <= 1), `${metric} bars stay within their tracks`);
     }
   }
   await page.locator('#task-select').focus();

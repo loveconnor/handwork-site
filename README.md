@@ -47,3 +47,5 @@ Benchmark values come from a fresh five-attempt series for Handwork, OpenCode, a
 The two GIFs come from a real interactive Handwork 0.0.9 session in a disposable project. The raw `script -r` recording contains the terminal output and timing. `scripts/generate-media.py` applies the recorded control sequences to a 110 by 38 terminal with Pyte, then draws each screen with Pillow. The generator caps idle gaps at 650 milliseconds but does not add or rewrite output. Playback is opt in. The page also has static posters, a pause control, keyboard tabs, and a text result.
 
 The source repository, contributor site, and npm version are intentionally explicit. Production metadata is generated when `SITE_URL` is set.
+
+Claude Code was added on October 4, 2026 with Opus 5.5 at medium effort, five attempts per task. Previous values are preserved. The method and aggregate results are in `public/benchmarks/claude-code/`; combined report downloads include the fourth row. Models and run dates differ.

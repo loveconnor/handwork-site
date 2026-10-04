@@ -268,6 +268,15 @@ const datasets = {
         "inputTokens": 623398.6,
         "outputTokens": 3643.6,
         "rss": 205.84375
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 262.985,
+        "toolCalls": 19.2,
+        "inputTokens": 748616.8,
+        "outputTokens": 10491.4,
+        "rss": 307.515625
       }
     ]
   },
@@ -303,6 +312,15 @@ const datasets = {
         "inputTokens": 82758.2,
         "outputTokens": 763.4,
         "rss": 234.015625
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 21.242,
+        "toolCalls": 3,
+        "inputTokens": 37797.2,
+        "outputTokens": 2095.8,
+        "rss": 275.234375
       }
     ]
   },
@@ -338,6 +356,15 @@ const datasets = {
         "inputTokens": 66153.2,
         "outputTokens": 566.4,
         "rss": 237.671875
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 12.835,
+        "toolCalls": 3.8,
+        "inputTokens": 32897.8,
+        "outputTokens": 1032.4,
+        "rss": 275.6875
       }
     ]
   },
@@ -373,6 +400,15 @@ const datasets = {
         "inputTokens": 129680.2,
         "outputTokens": 2236,
         "rss": 235.09375
+      },
+      {
+        "attempts": 5,
+        "fixes": 5,
+        "time": 47.945,
+        "toolCalls": 3.2,
+        "inputTokens": 53216.6,
+        "outputTokens": 5212.6,
+        "rss": 282.875
       }
     ]
   }
@@ -395,7 +431,7 @@ function updateBenchmark(value) {
     if (buildTag) buildTag.textContent = data.build;
     const formatted = {
       fixes: `${agent.fixes} / ${agent.attempts ?? data.attempts}`,
-      time: `${agent.time.toFixed(1)} s`,
+      time: agent.time === null ? "—" : `${agent.time.toFixed(1)} s`,
       toolCalls: agent.toolCalls.toFixed(1),
       inputTokens: Math.round(agent.inputTokens).toLocaleString('en-US'),
       outputTokens: Math.round(agent.outputTokens).toLocaleString('en-US'),
@@ -404,7 +440,7 @@ function updateBenchmark(value) {
     benchmarkMetricKeys.forEach(key => {
       const cell = rows[index].querySelector(`[data-metric="${key}"]`);
       cell.querySelector('.metric-value').textContent = formatted[key];
-      const scale = key === 'fixes' ? agent.fixes / (agent.attempts ?? data.attempts) : agent[key] / maxima[key];
+      const scale = key === 'fixes' ? agent.fixes / (agent.attempts ?? data.attempts) : (agent[key] ?? 0) / (maxima[key] || 1);
       cell.querySelector('.metric-bar').style.setProperty('--bar-scale', String(scale));
     });
   });

@@ -36,3 +36,7 @@ The earlier two-attempt Handwork series and historical competitor results are se
 ## Failures
 
 None. All 45 scored attempts passed.
+
+## Claude Code addition — October 4, 2026
+
+Claude Code was added in a separate five-attempt series using Opus 5.5 at medium effort. The existing results above used GPT-6 Astra at low effort and remain unchanged. These are different models and run dates, so the combined table does not isolate harness performance. [Read the Claude Code method and all attempts](/benchmarks/claude-code/REPORT.md).

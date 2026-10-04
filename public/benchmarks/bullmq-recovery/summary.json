@@ -28,5 +28,15 @@
     "mean_output_tokens": 3643.6,
     "mean_tool_calls": 20.2,
     "mean_model_requests": 21.2
+  },
+  "claude": {
+    "attempts": 5,
+    "successes": 5,
+    "median_success_seconds": 262.985,
+    "median_peak_mib": 307.515625,
+    "mean_input_tokens": 748616.8,
+    "mean_output_tokens": 10491.4,
+    "mean_tool_calls": 19.2,
+    "mean_model_requests": 17.8
   }
 }

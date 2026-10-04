@@ -86,12 +86,14 @@ test('GIF assets come from the recorded terminal stream', async () => {
 test('benchmark data and method are rendered without JavaScript', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8');
   for (const value of ["40.6 s","23.7 MiB","55.2 s","790.1 MiB","32.8 s","234.0 MiB","five attempts per task","kept every result"]) assert.ok(html.toLowerCase().includes(value.toLowerCase()), value);
-  assert.equal((html.match(/data-metric="fixes"/g) || []).length, 3, 'every completed-fixes value has a comparison bar');
-  assert.equal((html.match(/data-metric="time"/g) || []).length, 3, 'every median-time value has a comparison bar');
-  assert.equal((html.match(/data-metric="toolCalls"/g) || []).length, 3, 'every tool-call value has a comparison bar');
-  assert.equal((html.match(/data-metric="inputTokens"/g) || []).length, 3, 'every input-token value has a comparison bar');
-  assert.equal((html.match(/data-metric="outputTokens"/g) || []).length, 3, 'every output-token value has a comparison bar');
-  assert.equal((html.match(/data-metric="rss"/g) || []).length, 3, 'every memory value has a comparison bar');
+  assert.equal((html.match(/data-metric="fixes"/g) || []).length, 4, 'every completed-fixes value has a comparison bar');
+  assert.equal((html.match(/data-metric="time"/g) || []).length, 4, 'every median-time value has a comparison bar');
+  assert.equal((html.match(/data-metric="toolCalls"/g) || []).length, 4, 'every tool-call value has a comparison bar');
+  assert.equal((html.match(/data-metric="inputTokens"/g) || []).length, 4, 'every input-token value has a comparison bar');
+  assert.equal((html.match(/data-metric="outputTokens"/g) || []).length, 4, 'every output-token value has a comparison bar');
+  assert.equal((html.match(/data-metric="rss"/g) || []).length, 4, 'every memory value has a comparison bar');
+  assert.ok(html.includes('Claude Code') && html.includes('Opus 5.5 at medium effort'));
+  assert.ok(html.includes('do not isolate harness performance'));
   assert.match(html, /class="agent-logo" src="\/favicon\.svg" alt=""/, 'Handwork row uses the local mark');
   assert.match(html, /class="agent-logo" src="\/media\/logos\/opencode\.svg" alt=""/, 'OpenCode row uses its official mark');
   assert.match(html, /class="agent-logo" src="\/media\/logos\/openai\.svg" alt=""/, 'Codex row uses the official OpenAI mark');
