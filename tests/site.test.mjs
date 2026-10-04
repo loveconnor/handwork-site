@@ -99,3 +99,28 @@ test('benchmark data and method are rendered without JavaScript', async () => {
   assert.match(html, /class="agent-logo" src="\/media\/logos\/openai\.svg" alt=""/, 'Codex row uses the official OpenAI mark');
   for (const name of ['opencode.svg', 'openai.svg']) assert.ok((await stat(path.join(dist, 'media', 'logos', name))).size > 500, name);
 });
+
+test('analytics is included on production pages and excluded from local and preview builds', async () => {
+  const previous = process.env.VERCEL_ENV;
+  try {
+    delete process.env.VERCEL_ENV;
+    await build();
+    assert.doesNotMatch(await readFile(path.join(dist, 'index.html'), 'utf8'), /src="\/analytics.js"/);
+    process.env.VERCEL_ENV = 'production';
+    await build();
+    for (const page of [...pages, '404.html']) {
+      assert.match(await readFile(path.join(dist, page), 'utf8'), /<script type="module" src="\/analytics.js"><\/script>/);
+    }
+    assert.ok((await stat(path.join(dist, 'vendor/vercel-analytics.js'))).size > 1000);
+    assert.match(await readFile(path.join(dist, 'vendor/vercel-analytics-LICENSE.txt'), 'utf8'), /MIT/);
+    process.env.VERCEL_ENV = 'preview';
+    await build();
+    for (const page of [...pages, '404.html']) {
+      assert.doesNotMatch(await readFile(path.join(dist, page), 'utf8'), /src="\/analytics.js"/);
+    }
+  } finally {
+    if (previous === undefined) delete process.env.VERCEL_ENV;
+    else process.env.VERCEL_ENV = previous;
+    await build();
+  }
+});

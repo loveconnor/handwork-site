@@ -8,7 +8,7 @@ const claudeSummary = JSON.parse(await readFile(new URL('../public/benchmarks/cl
 const taskKeys = { 'Pagination': 'pagination', 'Authorization and cache': 'tenant-cache', 'Async search': 'search', 'BullMQ worker recovery': 'bullmq' };
 const port = 14321;
 const origin = `http://127.0.0.1:${port}`;
-const server = spawn(process.execPath, ['scripts/server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port) }, stdio: ['ignore', 'pipe', 'inherit'] });
+const server = spawn(process.execPath, ['scripts/server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port), VERCEL_ENV: 'preview' }, stdio: ['ignore', 'pipe', 'inherit'] });
 let browser;
 try {
   await new Promise((resolve, reject) => {
@@ -207,6 +207,37 @@ try {
   assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
   assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);
   await noJS.close();
+  const analyticsContext = await browser.newContext();
+  const analyticsPage = await analyticsContext.newPage();
+  let analyticsRequests = 0;
+  await analyticsPage.route('**/_vercel/insights/script.js', async route => {
+    analyticsRequests++;
+    await route.fulfill({ contentType: 'application/javascript', body: 'window.analyticsLoaded = true;' });
+  });
+  await analyticsPage.goto(origin + '/about/');
+  assert.equal(await analyticsPage.locator('script[src="/analytics.js"]').count(), 0, 'Preview pages do not load analytics');
+  assert.equal(analyticsRequests, 0);
+  await analyticsPage.evaluate(() => import('/analytics.js'));
+  await analyticsPage.waitForFunction(() => window.analyticsLoaded === true);
+  assert.equal(analyticsRequests, 1, 'SDK loads the same-origin Vercel production endpoint');
+  const sanitized = await analyticsPage.evaluate(() => {
+    const beforeSend = window.vaq.find(([name]) => name === 'beforeSend')[1];
+    return beforeSend({ type: 'pageview', url: location.origin + '/docs/?email=private@example.com#secret' });
+  });
+  assert.deepEqual(sanitized, { type: 'pageview', url: origin + '/docs/' });
+  await analyticsPage.reload();
+  await analyticsPage.evaluate(async () => {
+    Object.defineProperty(navigator, 'globalPrivacyControl', { value: true, configurable: true });
+    await import('/analytics.js');
+  });
+  assert.equal(analyticsRequests, 1, 'Global Privacy Control prevents tracking');
+  await analyticsPage.reload();
+  await analyticsPage.evaluate(async () => {
+    Object.defineProperty(navigator, 'doNotTrack', { value: '1', configurable: true });
+    await import('/analytics.js');
+  });
+  assert.equal(analyticsRequests, 1, 'Do Not Track prevents tracking');
+  await analyticsContext.close();
   assert.deepEqual(errors, []);
   console.log('PASS: 3 routes × 4 viewports; full-size viewer, GIF playback, browser Back, focus restoration, mobile panning, reduced motion, docs navigation, 404, and no-JS baseline. Screenshots in test-results/.');
 } finally {

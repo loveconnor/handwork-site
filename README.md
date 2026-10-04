@@ -1,6 +1,6 @@
 # Handwork site
 
-Standalone static site for the Handwork CLI. No desktop-app content. No framework, analytics, or runtime dependencies. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Its SIL Open Font License is stored beside the font in `public/fonts/`.
+Standalone static site for the Handwork CLI. No desktop-app content. No framework or server runtime. Production pages use Vercel Web Analytics for visitor and page-view counts. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Its SIL Open Font License is stored beside the font in `public/fonts/`.
 
 ## Local development
 
@@ -26,6 +26,12 @@ SITE_URL=https://example.com HANDWORK_VERSION=0.0.9 npm run build:production
 ```
 
 Browser checks require the dev dependency and Chromium: `npm install`, then `npx playwright install chromium`. Deploy the generated `dist/` directory to a static host with directory-index support. No server-side rendering or fallback routing is needed.
+
+## Web Analytics
+
+Enable Web Analytics in the Vercel project dashboard, then deploy the site with `npm run build` and output directory `dist`. The shared page template loads `@vercel/analytics` on every page when `VERCEL_ENV=production`. Local builds and Vercel preview deployments do not collect visits. Outside Vercel, `npm run build:production` enables the integration, but the host must provide Vercel's analytics endpoint.
+
+The build copies the browser SDK and its MIT license into `dist/vendor/`. Analytics removes query strings and URL fragments before sending page views, respects Global Privacy Control and Do Not Track, and sends no custom events. Verify live collection by visiting the deployed site and checking the Vercel Analytics dashboard; blockers or privacy preferences can prevent collection.
 
 ## Structure
 
