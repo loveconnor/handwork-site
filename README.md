@@ -46,7 +46,7 @@ The build copies the browser SDK and its MIT license into `dist/vendor/`. Analyt
 
 ## Desktop downloads
 
-The homepage links to the tested Windows x64 and ARM64 installers in `desktop-v0.1.5`. The installed app receives later releases through its sidebar updater. Update both installer links, the displayed desktop version, and the release notes link in `src/index.html` when changing the website download version. macOS downloads remain unavailable until a signed release is published.
+Below the terminal demo and benchmarks, the homepage links to the tested Windows x64 and ARM64 installers in `desktop-v0.1.5` and the unsigned Apple Silicon macOS preview in `desktop-macos-preview-0.1.5`. The installed app receives later releases through its sidebar updater. Update both installer links, the displayed desktop version, and the release notes link in `src/index.html` when changing the website download version. The macOS preview has no Developer ID signature or automatic updates. The download section identifies that limitation.
 
 ## Content provenance
 
