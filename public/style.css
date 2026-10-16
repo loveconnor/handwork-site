@@ -108,7 +108,7 @@ code { font-size: .94em; }
 .hero-copy { max-width: 680px; margin: 0 auto; }
 .hero-copy p:first-child { color: #000000; font-size: clamp(28px, 3vw, 38px); font-weight: 700; line-height: 1.22; letter-spacing: -.035em; }
 .hero-copy p:last-child { max-width: 640px; margin: 18px auto 0; color: var(--muted); font-family: var(--body-font); font-size: 16px; line-height: 1.6; }
-.hero-actions { display: flex; align-items: center; justify-content: center; gap: 34px; margin: 40px auto 0; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 16px 34px; margin: 40px auto 0; }
 .install-command { display: flex; align-items: center; width: 320px; min-height: 40px; padding: 6px 10px; border: 1px solid var(--line-dark); border-radius: 3px; text-align: left; font-size: 13px; }
 .install-command > span { margin-right: 9px; color: var(--text); }
 .install-command code { color: var(--text); }
@@ -142,6 +142,18 @@ code { font-size: .94em; }
 .install-note { margin: 10px auto 0; color: var(--faint); font-family: var(--body-font); font-size: 13px; }
 
 .section-label, .page-kicker { font-weight: 700; color: var(--text); }
+.desktop-section { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 64px; padding-block: 48px 56px; border-block: 1px solid var(--line); scroll-margin-top: 76px; }
+.desktop-copy h2 { color: #000000; font-size: 28px; font-weight: 700; line-height: 1.3; letter-spacing: -.035em; }
+.desktop-copy p { margin-top: 20px; color: var(--muted); font-size: 15px; }
+.desktop-copy .desktop-update-note { font-size: 13px; }
+.desktop-release { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12px; color: var(--muted); }
+.desktop-download-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; border-bottom: 1px solid var(--line); }
+.desktop-download-row h3 { font-size: 15px; font-weight: 700; }
+.desktop-download-row p { margin-top: 4px; color: var(--muted); font-size: 12px; }
+.desktop-download-row .button { min-height: 44px; padding-inline: 16px; }
+.desktop-platform-note { margin-top: 16px; color: var(--muted); font-size: 12px; }
+.desktop-downloads > .text-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; font-size: 12px; }
+
 .process-section { padding: 56px 0 40px; background: var(--background); }
 .process-intro { display: grid; grid-template-columns: 1fr 1fr; width: min(1200px, calc(100% - 64px)); align-items: stretch; }
 .process-intro .section-heading { display: block; padding: 28px 96px 28px 0; }
@@ -378,6 +390,7 @@ pre code { padding: 0; background: transparent; white-space: pre; font-size: 12p
   .wrap { width: calc(100% - 48px); }
   .docs-layout { grid-template-columns: 150px minmax(0, 1fr); gap: 48px; }
   .about-columns { gap: 40px; }
+  .desktop-section { gap: 32px; }
 }
 
 @media (max-width: 620px) {
@@ -402,6 +415,10 @@ pre code { padding: 0; background: transparent; white-space: pre; font-size: 12p
   .install-command { width: min(100%, 320px); }
   .copy-feedback { margin-top: 9px; }
   .install-note { max-width: 330px; font-size: 13px; }
+  .desktop-section { grid-template-columns: 1fr; gap: 32px; padding-block: 32px 36px; }
+  .desktop-copy h2 { font-size: 24px; }
+  .desktop-download-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .desktop-download-row .button { width: 100%; }
   .process-section { padding-top: 26px; padding-bottom: 40px; }
   .process-intro { grid-template-columns: 1fr; width: calc(100% - 36px); }
   .process-intro .section-heading { padding: 0 0 32px; }

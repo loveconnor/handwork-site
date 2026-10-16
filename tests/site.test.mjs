@@ -19,7 +19,7 @@ for (const page of pages) {
     assert.match(html, /https:\/\/github.com\/loveconnor\/handwork/);
     assert.match(html, /class="header-logo"[^>]+aria-label="Handwork home"><svg viewBox="0 0 520 520"/, 'header uses the Handwork logo mark');
     assert.match(html, /class="github-link footer-github"[^>]+aria-label="Handwork on GitHub"><svg/, 'footer GitHub link uses the shared icon');
-    assert.doesNotMatch(html, /desktop app|coming soon|revolution|supercharge|unlock your|additionally|crucial|delve|enhance|showcase|tapestry|testament|underscore|vibrant|serves as|stands as|boasts|in order to|it is important to note/i);
+    assert.doesNotMatch(html, /coming soon|revolution|supercharge|unlock your|additionally|crucial|delve|enhance|showcase|tapestry|testament|underscore|vibrant|serves as|stands as|boasts|in order to|it is important to note/i);
     assert.doesNotMatch(html, /[—–’“”]/);
     assert.doesNotMatch(html, /<select[ >]/, 'native selects are not used');
     const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);

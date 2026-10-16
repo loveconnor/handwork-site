@@ -1,6 +1,6 @@
 # Handwork site
 
-Standalone static site for the Handwork CLI. No desktop-app content. No framework or server runtime. Production pages use Vercel Web Analytics for visitor and page-view counts. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Its SIL Open Font License is stored beside the font in `public/fonts/`.
+Standalone static site for Handwork, with CLI documentation and desktop app downloads. No framework or server runtime. Production pages use Vercel Web Analytics for visitor and page-view counts. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Its SIL Open Font License is stored beside the font in `public/fonts/`.
 
 ## Local development
 
@@ -43,6 +43,10 @@ The build copies the browser SDK and its MIT license into `dist/vendor/`. Analyt
 - `content/actual-run.json`: recording setup and result
 - `content/demo-workspace/`: the fixture as it existed before the run
 - `scripts/generate-media.py`: renders the terminal recording with Python 3, Pyte, and Pillow
+
+## Desktop downloads
+
+The homepage links to the tested Windows x64 and ARM64 installers in `desktop-v0.1.5`. The installed app receives later releases through its sidebar updater. Update both installer links, the displayed desktop version, and the release notes link in `src/index.html` when changing the website download version. macOS downloads remain unavailable until a signed release is published.
 
 ## Content provenance
 
