@@ -11,10 +11,10 @@ export async function build() {
     ? process.env.VERCEL_ENV === 'production'
     : productionBuild;
   const analyticsScript = analyticsEnabled ? '<script type="module" src="/analytics.js"></script>' : '';
-  const release = process.env.HANDWORK_VERSION || '0.0.9';
+  const release = process.env.HANDWORK_VERSION || '0.1.2';
   const pages = [
     ['index', '/', 'Handwork | Coding agent for the terminal', 'Handwork is a coding agent for the terminal, written in Zig. It reads code, edits files, and runs tests.'],
-    ['docs', '/docs/', 'Documentation | Handwork', 'Install Handwork, connect a model provider, set permissions, and run a task.'],
+    ['docs', '/docs/', 'Documentation | Handwork', 'Install Handwork, connect a model provider, and display images, SVG drawings, and Mermaid diagrams in your terminal.'],
     ['about', '/about/', 'About | Handwork', 'Why Connor Love built Handwork, a native coding harness focused on low local memory use and a responsive terminal.'],
     ['404', '/404.html', 'Page not found | Handwork', 'The requested Handwork page could not be found.']
   ];

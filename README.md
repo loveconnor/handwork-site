@@ -19,10 +19,10 @@ npm test
 npm run test:browser
 ```
 
-Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. Set the release value when the current package version changes.
+Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. The displayed CLI version defaults to 0.1.2. Set HANDWORK_VERSION to override it for a release build; this is independent of the private site package version.
 
 ```sh
-SITE_URL=https://example.com HANDWORK_VERSION=0.0.9 npm run build:production
+SITE_URL=https://example.com HANDWORK_VERSION=0.1.2 npm run build:production
 ```
 
 Browser checks require the dev dependency and Chromium: `npm install`, then `npx playwright install chromium`. Deploy the generated `dist/` directory to a static host with directory-index support. No server-side rendering or fallback routing is needed.
@@ -45,6 +45,8 @@ The build copies the browser SDK and its MIT license into `dist/vendor/`. Analyt
 - `scripts/generate-media.py`: renders the terminal recording with Python 3, Pyte, and Pillow
 
 ## Content provenance
+
+The images and diagrams section uses the sibling Handwork repository `docs/inline-images.md`, inspected October 15, 2026. Terminal requirements link to the host documentation. Historical recordings retain their original version labels.
 
 CLI copy and documentation use the sibling Handwork repository README and terminal styling in `src/ui/render.zig` / `src/ui/assistant/user_message_card.zig`, inspected September 14, 2026. The site is standalone and does not read the sibling project during build or runtime.
 
