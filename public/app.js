@@ -240,16 +240,16 @@ const datasets = {
     "attempts": 5,
     "budget": 1800,
     "build": "ReleaseFast",
-    "source": "bullmq-recovery",
+    "source": "handwork-2026-10-19",
     "values": [
       {
         "attempts": 5,
         "fixes": 5,
-        "time": 251.485,
-        "toolCalls": 25.8,
-        "inputTokens": 477491.2,
-        "outputTokens": 2939,
-        "rss": 30.640625
+        "time": 232.136,
+        "toolCalls": 20.8,
+        "inputTokens": 321875.2,
+        "outputTokens": 3317.8,
+        "rss": 23.28125
       },
       {
         "attempts": 5,
@@ -289,11 +289,11 @@ const datasets = {
       {
         "attempts": 5,
         "fixes": 5,
-        "time": 40.622,
+        "time": 28.957,
         "toolCalls": 5,
-        "inputTokens": 37086.6,
-        "outputTokens": 991.8,
-        "rss": 23.65625
+        "inputTokens": 30740.6,
+        "outputTokens": 1012.4,
+        "rss": 24.4375
       },
       {
         "attempts": 5,
@@ -322,7 +322,8 @@ const datasets = {
         "outputTokens": 2095.8,
         "rss": 275.234375
       }
-    ]
+    ],
+    "source": "handwork-2026-10-19"
   },
   "pagination": {
     "label": "Pagination",
@@ -333,11 +334,11 @@ const datasets = {
       {
         "attempts": 5,
         "fixes": 5,
-        "time": 25.376,
+        "time": 20.222,
         "toolCalls": 5,
-        "inputTokens": 27880.2,
-        "outputTokens": 462,
-        "rss": 21.90625
+        "inputTokens": 25233.2,
+        "outputTokens": 464,
+        "rss": 24.390625
       },
       {
         "attempts": 5,
@@ -366,7 +367,8 @@ const datasets = {
         "outputTokens": 1032.4,
         "rss": 275.6875
       }
-    ]
+    ],
+    "source": "handwork-2026-10-19"
   },
   "cache": {
     "label": "Authorization and cache isolation",
@@ -377,11 +379,11 @@ const datasets = {
       {
         "attempts": 5,
         "fixes": 5,
-        "time": 86.128,
-        "toolCalls": 8.4,
-        "inputTokens": 71894.8,
-        "outputTokens": 2136.2,
-        "rss": 27.265625
+        "time": 50.298,
+        "toolCalls": 8.2,
+        "inputTokens": 58932.2,
+        "outputTokens": 1930.8,
+        "rss": 28.140625
       },
       {
         "attempts": 5,
@@ -410,7 +412,8 @@ const datasets = {
         "outputTokens": 5212.6,
         "rss": 282.875
       }
-    ]
+    ],
+    "source": "handwork-auth-cache-2026-10-19"
   }
 };
 const benchmarkMetricKeys = ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss'];
@@ -432,10 +435,10 @@ function updateBenchmark(value) {
     const formatted = {
       fixes: `${agent.fixes} / ${agent.attempts ?? data.attempts}`,
       time: agent.time === null ? "—" : `${agent.time.toFixed(1)} s`,
-      toolCalls: agent.toolCalls.toFixed(1),
-      inputTokens: Math.round(agent.inputTokens).toLocaleString('en-US'),
-      outputTokens: Math.round(agent.outputTokens).toLocaleString('en-US'),
-      rss: `${agent.rss.toFixed(1)} MiB`
+      toolCalls: agent.toolCalls === null ? '—' : agent.toolCalls.toFixed(1),
+      inputTokens: agent.inputTokens === null ? '—' : Math.round(agent.inputTokens).toLocaleString('en-US'),
+      outputTokens: agent.outputTokens === null ? '—' : Math.round(agent.outputTokens).toLocaleString('en-US'),
+      rss: agent.rss === null ? '—' : `${agent.rss.toFixed(1)} MiB`
     };
     benchmarkMetricKeys.forEach(key => {
       const cell = rows[index].querySelector(`[data-metric="${key}"]`);

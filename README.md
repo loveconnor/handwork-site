@@ -54,10 +54,14 @@ The images and diagrams section uses the sibling Handwork repository `docs/inlin
 
 CLI copy and documentation use the sibling Handwork repository README and terminal styling in `src/ui/render.zig` / `src/ui/assistant/user_message_card.zig`, inspected September 14, 2026. The site is standalone and does not read the sibling project during build or runtime.
 
-Benchmark values come from a fresh five-attempt series for Handwork, OpenCode, and Codex on pagination, async search, and authorization/cache isolation. All agents used the same model and 600-second limit, fresh workspaces, rotated order, and independent scoring. Every scored outcome is retained. The report and summary are served from `public/benchmarks/fair-comparison/`. Update `public/app.js` and the no-JavaScript table in `src/index.html` together.
+Archived September benchmark values came from a five-attempt series for Handwork, OpenCode, and Codex on pagination, async search, and authorization/cache isolation. All agents used the same model and 600-second limit, fresh workspaces, rotated order, and independent scoring. Every scored outcome is retained. The report and summary are served from `public/benchmarks/fair-comparison/`. Update `public/app.js` and the no-JavaScript table in `src/index.html` together.
 
 The two GIFs come from a real interactive Handwork 0.0.9 session in a disposable project. The raw `script -r` recording contains the terminal output and timing. `scripts/generate-media.py` applies the recorded control sequences to a 110 by 38 terminal with Pyte, then draws each screen with Pillow. The generator caps idle gaps at 650 milliseconds but does not add or rewrite output. Playback is opt in. The page also has static posters, a pause control, keyboard tabs, and a text result.
 
 The source repository, contributor site, and npm version are intentionally explicit. Production metadata is generated when `SITE_URL` is set.
 
 Claude Code was added on October 4, 2026 with Opus 5.5 at medium effort, five attempts per task. Previous values are preserved. The method and aggregate results are in `public/benchmarks/claude-code/`; combined report downloads include the fourth row. Models and run dates differ.
+
+Handwork alone was refreshed on October 19, 2026 using the current ReleaseFast build, five attempts on each original task. The original prompts, fixtures, verifiers and budgets are retained. Competitor figures and archived reports are unchanged; dates and methodological differences are visible on the page. The new aggregate export and method are in `public/benchmarks/handwork-2026-10-19/`. Regenerate only from a complete retained series with `node scripts/refresh-handwork-benchmarks.mjs /absolute/new-results-directory`.
+
+Authorization/cache now uses the separate complete five-attempt cohort in `public/benchmarks/handwork-auth-cache-2026-10-19/`. All metrics in that row come from this cohort; the earlier four-task series remains unchanged. Regenerate into a new cohort with `node scripts/refresh-auth-cache.mjs /absolute/new-results-directory`.

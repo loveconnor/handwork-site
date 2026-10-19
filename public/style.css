@@ -267,9 +267,9 @@ body.recording-viewer-open { overflow: hidden; }
 table { width: 100%; border-collapse: collapse; text-align: left; }
 th, td { padding: 16px 18px; border-bottom: 1px solid var(--line); font-weight: 400; }
 thead th { background: var(--surface); color: var(--muted); font-size: 12px; }
-.benchmark-table { min-width: 760px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12px; white-space: nowrap; }
+.benchmark-table { min-width: 1120px; border-collapse: separate; border-spacing: 0; table-layout: fixed; font-size: 12px; white-space: nowrap; }
 .benchmark-table th, .benchmark-table td { padding-inline: 14px; }
-.benchmark-table thead th { padding-top: 13px; padding-bottom: 13px; background: transparent; color: var(--faint); letter-spacing: .12em; text-transform: uppercase; }
+.benchmark-table thead th { padding-top: 13px; padding-bottom: 13px; background: transparent; color: var(--faint); letter-spacing: .12em; text-transform: uppercase; white-space: normal; }
 .benchmark-table th:nth-child(1) { width: 22%; }
 .benchmark-table th:nth-child(2) { width: 11%; }
 .benchmark-table th:nth-child(3) { width: 12%; }

@@ -5,7 +5,10 @@ import { mkdir, readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import { root } from '../scripts/build.mjs';
 const claudeSummary = JSON.parse(await readFile(new URL('../public/benchmarks/claude-code/summary.json', import.meta.url), 'utf8'));
+const handworkRefresh = JSON.parse(await readFile(new URL('../public/benchmarks/handwork-2026-10-19/summary.json', import.meta.url), 'utf8'));
+const authCacheRefresh = JSON.parse(await readFile(new URL('../public/benchmarks/handwork-auth-cache-2026-10-19/summary.json', import.meta.url), 'utf8'));
 const taskKeys = { 'Pagination': 'pagination', 'Authorization and cache': 'tenant-cache', 'Async search': 'search', 'BullMQ worker recovery': 'bullmq' };
+const measuredHandwork = option => (option === 'Authorization and cache' ? authCacheRefresh : handworkRefresh).handwork[taskKeys[option]];
 const port = 14321;
 const origin = `http://127.0.0.1:${port}`;
 const server = spawn(process.execPath, ['scripts/server.mjs'], { cwd: root, env: { ...process.env, PORT: String(port), VERCEL_ENV: 'preview' }, stdio: ['ignore', 'pipe', 'inherit'] });
@@ -34,6 +37,11 @@ try {
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No page overflow: ${route} @ ${width}`);
       assert.ok(await page.evaluate(() => [...document.images].every(image => image.complete && image.naturalWidth > 0)), 'Images loaded');
       if (route === '/') {
+        if (width > 620) {
+          const overflowingCells = await page.locator('.benchmark-table th, .benchmark-table td').evaluateAll(cells =>
+            cells.filter(cell => cell.scrollWidth > cell.clientWidth + 1).map(cell => cell.textContent.trim()));
+          assert.deepEqual(overflowingCells, [], `Benchmark cells remain readable without overlap @ ${width}`);
+        }
         assert.equal(await page.locator('.hero-warp').getAttribute('data-renderer'), 'webgl', `Shape shader rendered @ ${width}`);
         await page.locator('.hero-warp[data-ready="true"][data-mask="ready"]').waitFor();
         assert.equal(await page.locator('.hero-warp canvas').count(), 1);
@@ -116,12 +124,20 @@ try {
   await page.evaluate(() => history.back());
   await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
   assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-open', 'Browser Back closes the viewer and restores focus');
-  for (const [option, time, calls, input, output, memory, attempts, source] of [
-    ["Pagination","25.4 s","5.0","27,880","462","21.9 MiB","5 attempts","fair-comparison"],
-    ["Authorization and cache","86.1 s","8.4","71,895","2,136","27.3 MiB","5 attempts","fair-comparison"],
-    ["BullMQ worker recovery","251.5 s","25.8","477,491","2,939","30.6 MiB","1800 second limit","bullmq-recovery"],
-    ["Async search","40.6 s","5.0","37,087","992","23.7 MiB","5 attempts","fair-comparison"]
-  ]) {
+  assert.ok((await page.locator('.benchmark-heading').textContent()).includes('October 19, 2026'));
+  assert.ok((await page.locator('.benchmark-notes').textContent()).includes('September 18-19'));
+  const refreshCases = ['Pagination', 'Authorization and cache', 'BullMQ worker recovery', 'Async search'].map(option => {
+    const measured = measuredHandwork(option);
+    const value = (number, format) => number === null ? '—' : format(number);
+    return [option, value(measured.median_success_seconds, n => `${n.toFixed(1)} s`),
+      value(measured.mean_tool_calls, n => n.toFixed(1)),
+      value(measured.mean_input_tokens, n => Math.round(n).toLocaleString('en-US')),
+      value(measured.mean_output_tokens, n => Math.round(n).toLocaleString('en-US')),
+      value(measured.median_peak_mib, n => `${n.toFixed(1)} MiB`),
+      option === 'BullMQ worker recovery' ? '1800 second limit' : '5 attempts',
+      option === 'Authorization and cache' ? 'handwork-auth-cache-2026-10-19' : 'handwork-2026-10-19'];
+  });
+  for (const [option, time, calls, input, output, memory, attempts, source] of refreshCases) {
     await page.locator('#task-select').click();
     assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
     await page.getByRole('option', { name: option, exact: true }).click();
@@ -138,7 +154,8 @@ try {
       return groups;
     }, {}));
     const claude = claudeSummary[taskKeys[option]];
-    assert.deepEqual(metricScales.fixes, [1, 1, 1, claude.successes / claude.attempts], 'Completion bars show the measured pass rates');
+    const handwork = measuredHandwork(option);
+    assert.deepEqual(metricScales.fixes, [handwork.successes / handwork.attempts, 1, 1, claude.successes / claude.attempts], 'Completion bars show the measured pass rates');
     const claudeRow = page.getByRole('row', { name: /Claude Code/ });
     const claudeText = await claudeRow.textContent();
     const expectedClaude = [
@@ -202,7 +219,7 @@ try {
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
-  assert.ok((await staticPage.locator('table').textContent()).includes('23.7 MiB'));
+  assert.ok((await staticPage.locator('table').textContent()).includes(`${handworkRefresh.handwork.search.median_peak_mib.toFixed(1)} MiB`));
   assert.ok(await staticPage.locator('#inspect-panel img').isVisible());
   assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
   assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);

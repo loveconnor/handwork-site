@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-19",
+  "comparison_order": [
+    "handwork",
+    "opencode",
+    "codex",
+    "claude"
+  ],
+  "handwork": {
+    "bullmq": {
+      "attempts": 5,
+      "successes": 5,
+      "median_success_seconds": 232.136,
+      "median_peak_mib": 23.28125,
+      "mean_input_tokens": 321875.2,
+      "mean_output_tokens": 3317.8,
+      "mean_tool_calls": 20.8,
+      "mean_model_requests": 17.2
+    },
+    "pagination": {
+      "attempts": 5,
+      "successes": 5,
+      "median_success_seconds": 20.222,
+      "median_peak_mib": 24.390625,
+      "mean_input_tokens": 25233.2,
+      "mean_output_tokens": 464,
+      "mean_tool_calls": 5,
+      "mean_model_requests": 4
+    },
+    "search": {
+      "attempts": 5,
+      "successes": 5,
+      "median_success_seconds": 28.957,
+      "median_peak_mib": 24.4375,
+      "mean_input_tokens": 30740.6,
+      "mean_output_tokens": 1012.4,
+      "mean_tool_calls": 5,
+      "mean_model_requests": 4
+    },
+    "tenant-cache": {
+      "attempts": 5,
+      "successes": 5,
+      "median_success_seconds": 66.693,
+      "median_peak_mib": 27.125,
+      "mean_input_tokens": null,
+      "mean_output_tokens": null,
+      "mean_tool_calls": 8.4,
+      "mean_model_requests": 7
+    }
+  },
+  "method": {
+    "model": "gpt-6-astra",
+    "effort": "low",
+    "binary_sha256": "a740e3644e5c26cf34017041072dd4e17fc812fb0eada28c142ac56ae0904835",
+    "attempts_per_task": 5,
+    "budgets": {
+      "bullmq": 1800,
+      "pagination": 600,
+      "search": 600,
+      "tenant-cache": 600
+    },
+    "historical_dates": {
+      "opencode": "2026-09-18/2026-09-19",
+      "codex": "2026-09-18/2026-09-19",
+      "claude": "2026-10-04"
+    }
+  },
+  "unavailable_accounting": [
+    {
+      "task": "tenant-cache",
+      "attempts": 1
+    }
+  ],
+  "timing_notes": [
+    {
+      "id": "tenant-cache-3-handwork",
+      "task": "tenant-cache",
+      "attempt": 3,
+      "stopwatch_s": 200.62,
+      "artifact_interval_s": 360.28988,
+      "clock_gap_s": 159.66988
+    }
+  ],
+  "attempts": [
+    {
+      "task": "pagination",
+      "attempt": 1,
+      "success": true,
+      "duration_s": 23.408,
+      "accounting_available": true,
+      "input_tokens": 25205,
+      "output_tokens": 477,
+      "tool_calls": 5
+    },
+    {
+      "task": "search",
+      "attempt": 1,
+      "success": true,
+      "duration_s": 28.957,
+      "accounting_available": true,
+      "input_tokens": 30812,
+      "output_tokens": 1014,
+      "tool_calls": 5
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 1,
+      "success": true,
+      "duration_s": 66.693,
+      "accounting_available": true,
+      "input_tokens": 72085,
+      "output_tokens": 2104,
+      "tool_calls": 9
+    },
+    {
+      "task": "bullmq",
+      "attempt": 1,
+      "success": true,
+      "duration_s": 221.104,
+      "accounting_available": true,
+      "input_tokens": 250512,
+      "output_tokens": 3116,
+      "tool_calls": 21
+    },
+    {
+      "task": "pagination",
+      "attempt": 2,
+      "success": true,
+      "duration_s": 19.678,
+      "accounting_available": true,
+      "input_tokens": 25220,
+      "output_tokens": 478,
+      "tool_calls": 5
+    },
+    {
+      "task": "search",
+      "attempt": 2,
+      "success": true,
+      "duration_s": 32.139,
+      "accounting_available": true,
+      "input_tokens": 30911,
+      "output_tokens": 1076,
+      "tool_calls": 5
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 2,
+      "success": true,
+      "duration_s": 80.407,
+      "accounting_available": true,
+      "input_tokens": 83103,
+      "output_tokens": 1874,
+      "tool_calls": 10
+    },
+    {
+      "task": "bullmq",
+      "attempt": 2,
+      "success": true,
+      "duration_s": 235.705,
+      "accounting_available": true,
+      "input_tokens": 436143,
+      "output_tokens": 3199,
+      "tool_calls": 28
+    },
+    {
+      "task": "pagination",
+      "attempt": 3,
+      "success": true,
+      "duration_s": 18.771,
+      "accounting_available": true,
+      "input_tokens": 25271,
+      "output_tokens": 453,
+      "tool_calls": 5
+    },
+    {
+      "task": "search",
+      "attempt": 3,
+      "success": true,
+      "duration_s": 28.549,
+      "accounting_available": true,
+      "input_tokens": 30814,
+      "output_tokens": 996,
+      "tool_calls": 5
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 3,
+      "success": true,
+      "duration_s": 200.62,
+      "accounting_available": false,
+      "input_tokens": null,
+      "output_tokens": null,
+      "tool_calls": 8
+    },
+    {
+      "task": "bullmq",
+      "attempt": 3,
+      "success": true,
+      "duration_s": 219.19,
+      "accounting_available": true,
+      "input_tokens": 269148,
+      "output_tokens": 2674,
+      "tool_calls": 17
+    },
+    {
+      "task": "pagination",
+      "attempt": 4,
+      "success": true,
+      "duration_s": 23.204,
+      "accounting_available": true,
+      "input_tokens": 25270,
+      "output_tokens": 454,
+      "tool_calls": 5
+    },
+    {
+      "task": "search",
+      "attempt": 4,
+      "success": true,
+      "duration_s": 27.237,
+      "accounting_available": true,
+      "input_tokens": 30364,
+      "output_tokens": 969,
+      "tool_calls": 5
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 4,
+      "success": true,
+      "duration_s": 55.583,
+      "accounting_available": true,
+      "input_tokens": 70931,
+      "output_tokens": 1923,
+      "tool_calls": 7
+    },
+    {
+      "task": "bullmq",
+      "attempt": 4,
+      "success": true,
+      "duration_s": 256.71,
+      "accounting_available": true,
+      "input_tokens": 336308,
+      "output_tokens": 4498,
+      "tool_calls": 19
+    },
+    {
+      "task": "pagination",
+      "attempt": 5,
+      "success": true,
+      "duration_s": 20.222,
+      "accounting_available": true,
+      "input_tokens": 25200,
+      "output_tokens": 458,
+      "tool_calls": 5
+    },
+    {
+      "task": "search",
+      "attempt": 5,
+      "success": true,
+      "duration_s": 28.997,
+      "accounting_available": true,
+      "input_tokens": 30802,
+      "output_tokens": 1007,
+      "tool_calls": 5
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 5,
+      "success": true,
+      "duration_s": 58.299,
+      "accounting_available": true,
+      "input_tokens": 60718,
+      "output_tokens": 1883,
+      "tool_calls": 8
+    },
+    {
+      "task": "bullmq",
+      "attempt": 5,
+      "success": true,
+      "duration_s": 232.136,
+      "accounting_available": true,
+      "input_tokens": 317265,
+      "output_tokens": 3102,
+      "tool_calls": 19
+    }
+  ],
+  "comparison": {
+    "bullmq": {
+      "label": "BullMQ worker recovery",
+      "attempts": 5,
+      "budget": 1800,
+      "build": "ReleaseFast",
+      "source": "handwork-2026-10-19",
+      "values": [
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 232.136,
+          "toolCalls": 20.8,
+          "inputTokens": 321875.2,
+          "outputTokens": 3317.8,
+          "rss": 23.28125
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 446.917,
+          "toolCalls": 30.8,
+          "inputTokens": 539156,
+          "outputTokens": 4461.8,
+          "rss": 778.71875
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 231.599,
+          "toolCalls": 20.2,
+          "inputTokens": 623398.6,
+          "outputTokens": 3643.6,
+          "rss": 205.84375
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 262.985,
+          "toolCalls": 19.2,
+          "inputTokens": 748616.8,
+          "outputTokens": 10491.4,
+          "rss": 307.515625
+        }
+      ]
+    },
+    "search": {
+      "label": "Async search",
+      "attempts": 5,
+      "budget": 600,
+      "build": "ReleaseFast",
+      "values": [
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 28.957,
+          "toolCalls": 5,
+          "inputTokens": 30740.6,
+          "outputTokens": 1012.4,
+          "rss": 24.4375
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 55.151,
+          "toolCalls": 15.8,
+          "inputTokens": 78781.2,
+          "outputTokens": 1138.8,
+          "rss": 790.0625
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 32.841,
+          "toolCalls": 4.2,
+          "inputTokens": 82758.2,
+          "outputTokens": 763.4,
+          "rss": 234.015625
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 21.242,
+          "toolCalls": 3,
+          "inputTokens": 37797.2,
+          "outputTokens": 2095.8,
+          "rss": 275.234375
+        }
+      ],
+      "source": "handwork-2026-10-19"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "attempts": 5,
+      "budget": 600,
+      "build": "ReleaseFast",
+      "values": [
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 20.222,
+          "toolCalls": 5,
+          "inputTokens": 25233.2,
+          "outputTokens": 464,
+          "rss": 24.390625
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 41.656,
+          "toolCalls": 11,
+          "inputTokens": 42015.8,
+          "outputTokens": 734.4,
+          "rss": 748.1875
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 27.981,
+          "toolCalls": 3.4,
+          "inputTokens": 66153.2,
+          "outputTokens": 566.4,
+          "rss": 237.671875
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 12.835,
+          "toolCalls": 3.8,
+          "inputTokens": 32897.8,
+          "outputTokens": 1032.4,
+          "rss": 275.6875
+        }
+      ],
+      "source": "handwork-2026-10-19"
+    },
+    "cache": {
+      "label": "Authorization and cache isolation",
+      "attempts": 5,
+      "budget": 600,
+      "build": "ReleaseFast",
+      "values": [
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 66.693,
+          "toolCalls": 8.4,
+          "inputTokens": null,
+          "outputTokens": null,
+          "rss": 27.125
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 121.552,
+          "toolCalls": 24.2,
+          "inputTokens": 115747.8,
+          "outputTokens": 3056.8,
+          "rss": 785.3125
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 83.48,
+          "toolCalls": 6.2,
+          "inputTokens": 129680.2,
+          "outputTokens": 2236,
+          "rss": 235.09375
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 47.945,
+          "toolCalls": 3.2,
+          "inputTokens": 53216.6,
+          "outputTokens": 5212.6,
+          "rss": 282.875
+        }
+      ],
+      "source": "handwork-2026-10-19"
+    }
+  }
+}

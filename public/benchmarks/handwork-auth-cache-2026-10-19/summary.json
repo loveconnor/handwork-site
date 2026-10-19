@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-19",
+  "handwork": {
+    "tenant-cache": {
+      "attempts": 5,
+      "successes": 5,
+      "median_success_seconds": 50.298,
+      "median_peak_mib": 28.140625,
+      "mean_input_tokens": 58932.2,
+      "mean_output_tokens": 1930.8,
+      "mean_tool_calls": 8.2,
+      "mean_model_requests": 6
+    }
+  },
+  "attempts": [
+    {
+      "task": "tenant-cache",
+      "attempt": 1,
+      "success": true,
+      "duration_s": 57.557,
+      "input_tokens": 71512,
+      "output_tokens": 2023,
+      "tool_calls": 9,
+      "accounting_available": true
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 2,
+      "success": true,
+      "duration_s": 49.513,
+      "input_tokens": 58926,
+      "output_tokens": 1798,
+      "tool_calls": 8,
+      "accounting_available": true
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 3,
+      "success": true,
+      "duration_s": 55.151,
+      "input_tokens": 57797,
+      "output_tokens": 2073,
+      "tool_calls": 8,
+      "accounting_available": true
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 4,
+      "success": true,
+      "duration_s": 50.298,
+      "input_tokens": 59007,
+      "output_tokens": 1860,
+      "tool_calls": 8,
+      "accounting_available": true
+    },
+    {
+      "task": "tenant-cache",
+      "attempt": 5,
+      "success": true,
+      "duration_s": 47.629,
+      "input_tokens": 47419,
+      "output_tokens": 1900,
+      "tool_calls": 8,
+      "accounting_available": true
+    }
+  ],
+  "method": {
+    "model": "gpt-6-astra",
+    "effort": "low",
+    "binary_sha256": "a740e3644e5c26cf34017041072dd4e17fc812fb0eada28c142ac56ae0904835",
+    "attempts_per_task": 5,
+    "budgets": {
+      "tenant-cache": 600
+    },
+    "previous_cohort": "handwork-2026-10-19"
+  },
+  "comparison": {
+    "cache": {
+      "label": "Authorization and cache isolation",
+      "attempts": 5,
+      "budget": 600,
+      "build": "ReleaseFast",
+      "values": [
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 50.298,
+          "toolCalls": 8.2,
+          "inputTokens": 58932.2,
+          "outputTokens": 1930.8,
+          "rss": 28.140625
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 121.552,
+          "toolCalls": 24.2,
+          "inputTokens": 115747.8,
+          "outputTokens": 3056.8,
+          "rss": 785.3125
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 83.48,
+          "toolCalls": 6.2,
+          "inputTokens": 129680.2,
+          "outputTokens": 2236,
+          "rss": 235.09375
+        },
+        {
+          "attempts": 5,
+          "fixes": 5,
+          "time": 47.945,
+          "toolCalls": 3.2,
+          "inputTokens": 53216.6,
+          "outputTokens": 5212.6,
+          "rss": 282.875
+        }
+      ],
+      "source": "handwork-auth-cache-2026-10-19"
+    }
+  }
+}
