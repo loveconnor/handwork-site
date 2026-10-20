@@ -1,9 +1,10 @@
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { once } from 'node:events';
 import { mkdir, readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
-import { root } from '../scripts/build.mjs';
+import { root } from '../scripts/prepare.mjs';
+import { reportNames } from '../app/benchmarks/reports.mjs';
 const claudeSummary = JSON.parse(await readFile(new URL('../public/benchmarks/claude-code/summary.json', import.meta.url), 'utf8'));
 const handworkRefresh = JSON.parse(await readFile(new URL('../public/benchmarks/handwork-2026-10-19/summary.json', import.meta.url), 'utf8'));
 const authCacheRefresh = JSON.parse(await readFile(new URL('../public/benchmarks/handwork-auth-cache-2026-10-19/summary.json', import.meta.url), 'utf8'));
@@ -31,12 +32,21 @@ try {
     await page.setViewportSize({ width, height: 1000 });
     for (const route of ['/', '/docs/', '/about/']) {
       await page.goto(origin + route);
+      await page.waitForLoadState('networkidle');
       assert.equal(await page.locator('h1').count(), 1);
       assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(255, 255, 255)');
       assert.match(await page.evaluate(() => getComputedStyle(document.body).fontFamily), /Geist Mono/);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No page overflow: ${route} @ ${width}`);
       assert.ok(await page.evaluate(() => [...document.images].every(image => image.complete && image.naturalWidth > 0)), 'Images loaded');
       if (route === '/') {
+        const downloadBounds = await page.locator('.desktop-download-row .download-button').evaluateAll(buttons =>
+          buttons.map(button => { const bounds = button.getBoundingClientRect(); return [bounds.x, bounds.width, bounds.height].map(Math.round); }));
+        assert.equal(downloadBounds.length, 3);
+        for (const bounds of downloadBounds) assert.deepEqual(bounds, downloadBounds[0], `Download buttons align and match sizes @ ${width}`);
+        assert.equal(await page.locator('.demo-tabs [data-slot="tabs-trigger"]').count(), 2, 'Recording uses Honest UI tabs');
+        assert.equal(await page.locator('#task-select[data-slot="select-trigger"]').count(), 1, 'Benchmark picker uses Honest UI Select');
+        assert.equal(await page.locator('.demo-tabs [data-slot="tabs-trigger"]').evaluateAll(tabs => tabs.every(tab => tab.scrollWidth <= tab.clientWidth)), true, `Tab labels remain fully visible @ ${width}`);
+
         if (width > 620) {
           const overflowingCells = await page.locator('.benchmark-table th, .benchmark-table td').evaluateAll(cells =>
             cells.filter(cell => cell.scrollWidth > cell.clientWidth + 1).map(cell => cell.textContent.trim()));
@@ -82,14 +92,20 @@ try {
   await footerTextLink.hover();
   await page.waitForTimeout(150);
   assert.ok(Number(await footerTextLink.evaluate(link => getComputedStyle(link).opacity)) < Number(footerRestingStyle.opacity), 'Footer text link becomes lighter on hover');
-  await page.getByRole('button', { name: 'Copy install command', exact: true }).click();
+  const installCode = page.locator('[data-slot="prose-code-block"]');
+  await expect(installCode.locator('pre code')).toHaveText('npm install -g handwork');
+  await installCode.getByRole('button', { name: 'Copy install command', exact: true }).focus();
+  await page.keyboard.press('Enter');
+  await expect(installCode.getByRole('status')).toHaveText('Install command copied.');
   assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'npm install -g handwork');
   await page.getByRole('button', { name: 'Play recording', exact: true }).click();
   assert.match(await page.locator('#inspect-panel img').getAttribute('src'), /\.gif$/);
   await page.getByRole('tab', { name: /Inspect/ }).focus();
   await page.evaluate(() => {
     window.__keyboardTabTransitions = [];
-    document.querySelector('.demo-wrap').addEventListener('transitionrun', event => window.__keyboardTabTransitions.push(event.propertyName));
+    document.querySelector('.demo-wrap').addEventListener('transitionrun', event => {
+      if (event.target.matches('[role="tabpanel"], .tab-indicator')) window.__keyboardTabTransitions.push(event.propertyName);
+    });
   });
   await page.keyboard.press('ArrowRight');
   assert.equal(await page.locator('#verify-tab').getAttribute('aria-selected'), 'true');
@@ -111,7 +127,7 @@ try {
   await recordingViewer.getByRole('button', { name: 'Play recording', exact: true }).click();
   assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /verify\.gif$/);
   await recordingViewer.getByRole('button', { name: /01\s+Inspect/ }).click();
-  assert.equal(await page.locator('#inspect-tab').getAttribute('aria-selected'), 'true', 'Viewer step selection stays in sync with the page');
+  await expect(page.locator('#inspect-tab'), 'Viewer step selection stays in sync with the page').toHaveAttribute('aria-selected', 'true');
   assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /inspect\.gif$/);
   await recordingViewer.getByRole('button', { name: 'Pause recording', exact: true }).click();
   assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /inspect\.png$/);
@@ -139,10 +155,10 @@ try {
   });
   for (const [option, time, calls, input, output, memory, attempts, source] of refreshCases) {
     await page.locator('#task-select').click();
-    assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
+    await expect(page.locator('#task-select')).toHaveAttribute('aria-expanded', 'true');
     await page.getByRole('option', { name: option, exact: true }).click();
-    assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'false');
-    assert.equal(await page.locator('#task-select-value').textContent(), option);
+    await expect(page.locator('#task-select')).toHaveAttribute('aria-expanded', 'false');
+    await expect(page.locator('#task-select-value')).toHaveText(option);
     const row = await page.locator('.handwork-row').textContent();
     for (const expected of [time, calls, input, output, memory]) assert.ok(row.includes(expected), `${option} includes ${expected}`);
     assert.ok((await page.locator('#benchmark-budget').textContent()).includes(attempts));
@@ -175,20 +191,31 @@ try {
   }
   await page.locator('#task-select').focus();
   await page.keyboard.press('ArrowDown');
-  assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'true');
+  await expect(page.locator('#task-select')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.getByRole('option', { name: 'Async search', exact: true })).toBeFocused();
   await page.keyboard.press('End');
+  await expect(page.getByRole('option', { name: 'BullMQ worker recovery', exact: true })).toBeFocused();
   await page.keyboard.press('Enter');
-  assert.equal(await page.locator('#task-select-value').textContent(), 'BullMQ worker recovery');
+  await expect(page.locator('#task-select-value')).toHaveText('BullMQ worker recovery');
   assert.equal(await page.locator('.metric-bar').first().evaluate(bar => getComputedStyle(bar, '::after').transitionProperty), 'transform', 'Metric bars animate with transform');
   await page.waitForTimeout(240);
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('Escape');
-  assert.equal(await page.locator('#task-select').getAttribute('aria-expanded'), 'false');
+  await expect(page.locator('#task-select')).toHaveAttribute('aria-expanded', 'false');
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
   assert.match(await page.locator('#inspect-panel img').getAttribute('src'), /\.png$/);
   assert.equal(await page.locator('.hero-warp').getAttribute('data-motion'), 'reduced');
   await page.goto(origin + '/docs/');
+  const examples = page.locator('.docs-content [data-slot="prose-code-block"]');
+  await expect(examples).toHaveCount(9);
+  for (const example of await examples.all()) {
+    const code = await example.locator('pre code').textContent();
+    await example.getByRole('button').focus();
+    await page.keyboard.press('Enter');
+    await expect(example.getByRole('status')).toHaveText('Copied');
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), code, 'Copy includes the complete example');
+  }
   await page.getByRole('navigation', { name: 'Documentation sections' }).getByRole('link', { name: 'Permissions and data' }).click();
   assert.ok(page.url().endsWith('#permissions'));
   await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('link', { name: 'About', exact: true }).click();
@@ -204,18 +231,31 @@ try {
   await page.locator('#demo-open').click();
   assert.equal(await page.locator('#recording-viewer').evaluate(viewer => Math.round(viewer.getBoundingClientRect().height)), 1000, 'Mobile viewer fills the viewport');
   assert.equal(await page.locator('#recording-viewer-play').getAttribute('aria-pressed'), 'false', 'Reduced-motion viewer starts paused');
+  assert.equal(await page.locator('#recording-viewer-play .playback-icons').isVisible(), true, 'Mobile playback icon remains visible when its text label is hidden');
   assert.ok(await page.locator('#recording-viewer-content').evaluate(content => content.scrollWidth > content.clientWidth), 'Full-size mobile recording can be panned at its natural size');
   await page.locator('#recording-viewer-play').click();
   assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /\.gif$/);
   await page.getByRole('button', { name: 'Close full-size recording' }).click();
   await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
   await page.locator('#task-select').click();
+  await expect(page.getByRole('option')).toHaveCount(4);
   for (const option of await page.getByRole('option').all()) assert.ok(await option.evaluate(item => item.getBoundingClientRect().height >= 44), 'Benchmark options have 44px mobile targets');
   await page.goto(origin + '/docs/');
   assert.equal(await page.locator('.docs-nav-heading').isHidden(), true, 'Static documentation heading is hidden on mobile');
   assert.equal(await page.locator('#docs-sections').isHidden(), true, 'Mobile documentation menu starts collapsed');
   await page.locator('#docs-nav-toggle').click();
   assert.equal(await page.locator('#docs-sections').isVisible(), true, 'Mobile documentation menu opens');
+  for (const report of await reportNames()) {
+    const response = await page.goto(`${origin}/benchmarks/${report}/`);
+    assert.equal(response.status(), 200);
+    await expect(page.locator('.honest-prose h1')).toHaveCount(1);
+    assert.ok(await page.locator('[data-slot="markdown-table"]').count() > 0);
+    assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, `${report}: tables stay inside the mobile page`);
+    await expect(page.getByRole('link', { name: 'Download Markdown' })).toHaveAttribute('href', `/benchmarks/${report}/REPORT.md`);
+  }
+  await page.goto(`${origin}/benchmarks/handwork-2026-10-19/`);
+  await page.getByRole('link', { name: 'September comparison and previous Handwork figures', exact: true }).click();
+  await expect(page).toHaveURL(`${origin}/benchmarks/fair-comparison/`);
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
@@ -223,6 +263,9 @@ try {
   assert.ok(await staticPage.locator('#inspect-panel img').isVisible());
   assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
   assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);
+  await staticPage.goto(`${origin}/benchmarks/handwork-2026-10-19/`);
+  await expect(staticPage.locator('.honest-prose h1')).toHaveText('Handwork refresh — October 19, 2026');
+  await expect(staticPage.locator('.honest-prose table')).toHaveCount(3);
   await noJS.close();
   const analyticsContext = await browser.newContext();
   const analyticsPage = await analyticsContext.newPage();
@@ -256,7 +299,7 @@ try {
   assert.equal(analyticsRequests, 1, 'Do Not Track prevents tracking');
   await analyticsContext.close();
   assert.deepEqual(errors, []);
-  console.log('PASS: 3 routes × 4 viewports; full-size viewer, GIF playback, browser Back, focus restoration, mobile panning, reduced motion, docs navigation, 404, and no-JS baseline. Screenshots in test-results/.');
+  console.log('PASS: 3 routes × 4 viewports; full-size viewer, GIF playback, browser Back, focus restoration, mobile panning, reduced motion, docs navigation, 404, rendered benchmark reports, archived-report navigation, and no-JS baseline. Screenshots in test-results/.');
 } finally {
   await browser?.close();
   if (server.exitCode === null) { const exited = once(server, 'exit'); server.kill('SIGTERM'); await exited; }

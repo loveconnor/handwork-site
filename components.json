@@ -1,0 +1,21 @@
+{
+  "$schema": "https://honestui.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": false,
+  "tailwind": {
+    "config": "",
+    "css": "app/buttons.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "honestui/icons",
+  "aliases": {
+    "components": "@/components",
+    "ui": "@/components/ui",
+    "utils": "@/lib/utils",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  }
+}

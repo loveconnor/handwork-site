@@ -1,33 +1,15 @@
-const copyButton = document.querySelector('[data-copy]');
-copyButton?.addEventListener('click', async () => {
-  const status = document.querySelector('#copy-status');
-  try {
-    await navigator.clipboard.writeText(copyButton.dataset.copy);
-    status.textContent = 'Install command copied.';
-    copyButton.setAttribute('aria-label', 'Install command copied');
-    copyButton.classList.add('copied');
-    setTimeout(() => {
-      copyButton.classList.remove('copied');
-      copyButton.setAttribute('aria-label', 'Copy install command');
-      status.textContent = '';
-    }, 2000);
-  } catch { status.textContent = 'Copy unavailable. Select and copy the install command above.'; }
-});
-
 const tabs = [...document.querySelectorAll('[data-demo]')];
-const tabList = document.querySelector('.demo-tabs');
-const captureShell = document.querySelector('.capture-shell');
 const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let playing = false;
 const toggle = document.querySelector('#motion-toggle');
-const toggleLabel = toggle?.querySelector('span');
+const toggleLabel = toggle?.querySelector('.motion-label');
 const demoOpen = document.querySelector('#demo-open');
 const recordingViewer = document.querySelector('#recording-viewer');
 const recordingViewerImage = document.querySelector('#recording-viewer-image');
 const recordingViewerContent = document.querySelector('#recording-viewer-content');
 const recordingViewerTitle = document.querySelector('#recording-viewer-title');
 const recordingViewerPlay = document.querySelector('#recording-viewer-play');
-const recordingViewerPlayLabel = recordingViewerPlay?.querySelector('span');
+const recordingViewerPlayLabel = recordingViewerPlay?.querySelector('.motion-label');
 const recordingViewerClose = document.querySelector('#recording-viewer-close');
 const recordingViewerSteps = [...document.querySelectorAll('[data-viewer-demo]')];
 let recordingViewerPlaying = false;
@@ -47,51 +29,17 @@ function updateMotion() {
   });
   updateMotionButton(toggle, toggleLabel, playing);
 }
-function updateTabIndicator(tab) {
-  if (!tabList || !tab) return;
-  tabList.style.setProperty('--indicator-x', `${tab.offsetLeft}px`);
-  tabList.style.setProperty('--indicator-width', String(tab.offsetWidth));
-}
-function selectTab(tab, { animate = true } = {}) {
-  if (!animate) {
-    tabList?.setAttribute('data-motion', 'none');
-    captureShell?.setAttribute('data-motion', 'none');
-  }
-  tabs.forEach(item => {
-    const active = item === tab;
-    const panel = document.getElementById(item.getAttribute('aria-controls'));
-    item.setAttribute('aria-selected', String(active));
-    item.tabIndex = active ? 0 : -1;
-    panel.dataset.state = active ? 'active' : 'inactive';
-    panel.setAttribute('aria-hidden', String(!active));
-    panel.inert = !active;
-    panel.hidden = false;
-  });
-  const activeImage = document.querySelector(`#${tab?.getAttribute('aria-controls')} .demo-image`);
-  if (demoOpen && activeImage) demoOpen.href = activeImage.dataset.poster;
-  updateTabIndicator(tab);
+function syncRecordingPreview() {
+  const active = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
+  const image = active && document.querySelector(`#${active.getAttribute('aria-controls')} .demo-image`);
+  if (demoOpen && image) demoOpen.href = image.dataset.poster;
   updateMotion();
-  if (!animate) {
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      tabList?.removeAttribute('data-motion');
-      captureShell?.removeAttribute('data-motion');
-    }));
-  }
 }
-tabs.forEach((tab, index) => {
-  tab.addEventListener('click', () => selectTab(tab));
-  tab.addEventListener('keydown', event => {
-    const keys = { ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index + tabs.length - 1) % tabs.length, Home: 0, End: tabs.length - 1 };
-    if (!(event.key in keys)) return;
-    event.preventDefault(); const next = tabs[keys[event.key]]; selectTab(next, { animate: false }); next.focus();
-  });
-});
-const initialTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
-if (initialTab) {
-  selectTab(initialTab, { animate: false });
-  requestAnimationFrame(() => { tabList.dataset.ready = ''; });
-  addEventListener('resize', () => updateTabIndicator(tabs.find(tab => tab.getAttribute('aria-selected') === 'true')));
+function selectTab(tab) {
+  if (tab) document.dispatchEvent(new CustomEvent('handwork:select-recording', { detail: tab.dataset.demo }));
 }
+document.addEventListener('handwork:recording-changed', syncRecordingPreview);
+syncRecordingPreview();
 toggle?.addEventListener('click', () => { playing = !playing; updateMotion(); });
 
 function getDemoTab(value) {
@@ -112,7 +60,7 @@ function setRecordingViewerStep(tab, { syncPage = true, updateHistory = true } =
   recordingViewerImage.dataset.poster = sourceImage.dataset.poster;
   recordingViewerImage.alt = sourceImage.alt;
   recordingViewerSteps.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.viewerDemo === tab.dataset.demo)));
-  if (syncPage) selectTab(tab, { animate: false });
+  if (syncPage) selectTab(tab);
   updateRecordingViewerMotion();
   recordingViewerContent?.scrollTo(0, 0);
   if (updateHistory && recordingViewer.open && history.state?.handworkRecording) {
@@ -417,10 +365,6 @@ const datasets = {
   }
 };
 const benchmarkMetricKeys = ['fixes', 'time', 'toolCalls', 'inputTokens', 'outputTokens', 'rss'];
-const taskSelect = document.querySelector('#task-select');
-const taskMenu = document.querySelector('#task-options');
-const taskOptions = [...document.querySelectorAll('#task-options [role="option"]')];
-let activeTaskOption = taskOptions.find(option => option.getAttribute('aria-selected') === 'true');
 
 function updateBenchmark(value) {
   const data = datasets[value];
@@ -448,67 +392,9 @@ function updateBenchmark(value) {
     });
   });
   const source = data.source ?? 'fair-comparison';
-  document.querySelector('#benchmark-source').href = `/benchmarks/${source}/REPORT.md`;
+  document.querySelector('#benchmark-source').href = `/benchmarks/${source}/`;
   document.querySelector('#benchmark-download').href = `/benchmarks/${source}/summary.json`;
 }
-function setActiveTaskOption(option) {
-  activeTaskOption?.classList.remove('is-active');
-  activeTaskOption = option;
-  activeTaskOption?.classList.add('is-active');
-  if (taskSelect?.getAttribute('aria-expanded') === 'true') taskSelect.setAttribute('aria-activedescendant', option.id);
-}
-function setTaskMenuOpen(open) {
-  if (!taskSelect || !taskMenu) return;
-  taskSelect.setAttribute('aria-expanded', String(open));
-  taskMenu.hidden = !open;
-  if (open) setActiveTaskOption(taskOptions.find(option => option.getAttribute('aria-selected') === 'true'));
-  else {
-    taskSelect.removeAttribute('aria-activedescendant');
-    activeTaskOption?.classList.remove('is-active');
-  }
-}
-function chooseTask(option) {
-  taskOptions.forEach(item => item.setAttribute('aria-selected', String(item === option)));
-  taskSelect.dataset.value = option.dataset.value;
-  document.querySelector('#task-select-value').textContent = option.textContent.trim();
-  updateBenchmark(option.dataset.value);
-  setTaskMenuOpen(false);
-}
-function moveActiveTask(step) {
-  const index = taskOptions.indexOf(activeTaskOption);
-  setActiveTaskOption(taskOptions[(index + step + taskOptions.length) % taskOptions.length]);
-}
-
-taskSelect?.addEventListener('click', () => setTaskMenuOpen(taskSelect.getAttribute('aria-expanded') !== 'true'));
-taskSelect?.addEventListener('keydown', event => {
-  const open = taskSelect.getAttribute('aria-expanded') === 'true';
-  if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
-    event.preventDefault();
-    if (open) moveActiveTask(event.key === 'ArrowDown' ? 1 : -1);
-    else setTaskMenuOpen(true);
-  } else if (event.key === 'Home' || event.key === 'End') {
-    event.preventDefault();
-    if (!open) setTaskMenuOpen(true);
-    setActiveTaskOption(taskOptions[event.key === 'Home' ? 0 : taskOptions.length - 1]);
-  } else if (event.key === 'Enter' || event.key === ' ') {
-    event.preventDefault();
-    if (open) chooseTask(activeTaskOption);
-    else setTaskMenuOpen(true);
-  } else if (event.key === 'Escape' && open) {
-    event.preventDefault();
-    setTaskMenuOpen(false);
-  } else if (event.key === 'Tab' && open) {
-    setTaskMenuOpen(false);
-  } else if (event.key.length === 1 && !event.metaKey && !event.ctrlKey && !event.altKey) {
-    const match = taskOptions.find(option => option.textContent.trim().toLowerCase().startsWith(event.key.toLowerCase()));
-    if (match) { event.preventDefault(); setTaskMenuOpen(true); setActiveTaskOption(match); }
-  }
-});
-taskOptions.forEach(option => {
-  option.addEventListener('mousedown', event => event.preventDefault());
-  option.addEventListener('click', () => chooseTask(option));
-  option.addEventListener('pointermove', () => setActiveTaskOption(option));
-});
-document.addEventListener('pointerdown', event => {
-  if (!event.target.closest('.custom-select')) setTaskMenuOpen(false);
+document.addEventListener('handwork:benchmark-task', event => {
+  if (Object.hasOwn(datasets, event.detail)) updateBenchmark(event.detail);
 });

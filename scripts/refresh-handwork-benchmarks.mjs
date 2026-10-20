@@ -78,27 +78,27 @@ app = app.replace("toolCalls: agent.toolCalls.toFixed(1),", "toolCalls: agent.to
   .replace("inputTokens: Math.round(agent.inputTokens).toLocaleString('en-US'),", "inputTokens: agent.inputTokens === null ? '—' : Math.round(agent.inputTokens).toLocaleString('en-US'),")
   .replace("outputTokens: Math.round(agent.outputTokens).toLocaleString('en-US'),", "outputTokens: agent.outputTokens === null ? '—' : Math.round(agent.outputTokens).toLocaleString('en-US'),")
   .replace('rss: `${agent.rss.toFixed(1)} MiB`', "rss: agent.rss === null ? '—' : `${agent.rss.toFixed(1)} MiB`");
-let html = read('src/index.html');
+let html = read('app/page.jsx');
 html = html.replace(/(<h2 id="benchmark-heading">[^<]+<\/h2><p>)[\s\S]*?(<\/p>)/,
-  (_, open, close) => open + `Handwork was rerun on ${displayDate} with the current ReleaseFast build. Five attempts per agent on each of four coding tasks, using the same task prompts, time limits, and independent checks. Competitor results are from earlier series.` + close);
-html = html.replace(/(<tbody id="benchmark-rows">)([\s\S]*?)(<\/tbody>)/, (_, open, body, close) => {
+  (_, open, close) => open + `Four coding tasks, five attempts per task. Handwork was rerun on ${displayDate}. Other agents use earlier results.` + close);
+html = html.replace(/(<TableBody id="benchmark-rows">)([\s\S]*?)(<\/TableBody>)/, (_, open, body, close) => {
   let index = 0;
   const data = datasets.search;
-  return open + body.replace(/<tr\b[\s\S]*?<\/tr>/g, row => {
+  return open + body.replace(/<TableRow\b[\s\S]*?<\/TableRow>/g, row => {
     const agent = data.values[index++];
     const values = formatted(agent);
     for (const key of keys) {
       const max = Math.max(...data.values.map(v => v[key] ?? 0));
       const scale = key === 'fixes' ? agent.fixes / agent.attempts : (agent[key] ?? 0) / (max || 1);
-      const re = new RegExp('(data-metric="' + key + '"[^\\n]*?--bar-scale:)[^";]+("[^\\n]*?class="metric-value">)[^<]+');
+      const re = new RegExp('(data-metric="' + key + '"[^\\n]*?"--bar-scale": ")[^"]+("[^\\n]*?className="metric-value">)[^<]+');
       assert.ok(re.test(row), `Missing static ${key} cell`);
       row = row.replace(re, (_, before, middle) => before + Number(scale.toFixed(6)) + middle + values[key]);
     }
     return row;
   }) + close;
 });
-html = html.replace(/(<div class="benchmark-notes"><p>)[\s\S]*?(<\/p>)/,
-  (_, open, close) => open + `Each agent had five attempts per task with the same time limit. Handwork's new series ran serially on ${displayDate}; OpenCode and Codex are from September 18-19, and Claude Code from October 4, 2026. We kept every result, including failures. The older Handwork results remain in the archived reports.` + close);
+html = html.replace(/(<div className="benchmark-notes"><p>)[\s\S]*?(<\/p>)/,
+  (_, open, close) => open + `We kept every result, including failures. OpenCode and Codex ran on September 18-19, and Claude Code on October 4, 2026. The older Handwork results remain in the archived reports.` + close);
 html = html.replace('Handwork, OpenCode, and Codex used GPT-6 Astra with low reasoning and a 272,000 token context limit.',
   'Handwork, OpenCode, and Codex used GPT-6 Astra with low reasoning. Recorded configurations and context settings are in the linked method reports.');
 html = html.replace('Read the fresh comparison report ', 'Read the dated comparison report ');
@@ -116,10 +116,10 @@ if (timingReview.gaps.length) {
   html = html.replace('Bar length shows magnitude, not an overall score.',
     'Bar length shows magnitude, not an overall score.' + pauseNote);
 }
-html = html.replace(/(id="benchmark-source"[^>]*href=")[^"]+/, `$1/benchmarks/${source}/REPORT.md`);
+html = html.replace(/(id="benchmark-source"[^>]*href=")[^"]+/, `$1/benchmarks/${source}/`);
 html = html.replace(/(id="benchmark-download"[^>]*href=")[^"]+/, `$1/benchmarks/${source}/summary.json`);
 html = html.replace(/<noscript><p>Open the <a href="\/benchmarks\/fair-comparison\/REPORT.md">fresh comparison report<\/a> for the other small tasks or the <a href="\/benchmarks\/bullmq-recovery\/REPORT.md">BullMQ worker recovery report<\/a>\.<\/p><\/noscript>/,
-  `<noscript><p>Read the <a href="/benchmarks/${source}/REPORT.md">dated report for all four tasks</a>, including the latest Handwork attempts and links to the archived series.</p></noscript>`);
+  `<noscript><p>Read the <a href="/benchmarks/${source}/">dated report for all four tasks</a>, including the latest Handwork attempts and links to the archived series.</p></noscript>`);
 
 const lines = [`# Handwork refresh — ${displayDate}`, '',
   `Five fresh Handwork attempts on each original landing-page task. Build: ${state.build}, SHA-256 \`${state.binary_sha256}\`. Model: ${state.model}; reasoning: ${state.effort}.`, '',
@@ -173,7 +173,7 @@ fs.mkdirSync(destination, { recursive: true });
 fs.writeFileSync(path.join(destination, 'REPORT.md'), lines.join('\n'));
 fs.writeFileSync(path.join(destination, 'summary.json'), JSON.stringify(exported, null, 2) + '\n');
 fs.writeFileSync(path.join(site, 'public/app.js'), app);
-fs.writeFileSync(path.join(site, 'src/index.html'), html);
+fs.writeFileSync(path.join(site, 'app/page.jsx'), html);
 const readme = read('README.md').replace('Benchmark values come from a fresh five-attempt series', 'Archived September benchmark values came from a five-attempt series');
 fs.writeFileSync(path.join(site, 'README.md'), readme + `\nHandwork alone was refreshed on ${displayDate} using the current ReleaseFast build, five attempts on each original task. The original prompts, fixtures, verifiers and budgets are retained. Competitor figures and archived reports are unchanged; dates and methodological differences are visible on the page. The new aggregate export and method are in \`public/benchmarks/${source}/\`. Regenerate only from a complete retained series with \`node scripts/refresh-handwork-benchmarks.mjs /absolute/new-results-directory\`.\n`);
 console.log(`Updated Handwork from all ${records.length} retained attempts; historical competitor values and reports preserved.`);

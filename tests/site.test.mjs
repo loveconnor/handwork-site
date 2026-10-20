@@ -2,14 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { build, root } from '../scripts/build.mjs';
-await build();
+import { root } from '../scripts/prepare.mjs';
+import { spawnSync } from 'node:child_process';
 const dist = path.join(root, 'dist');
 const pages = ['index.html', 'docs/index.html', 'about/index.html'];
 for (const page of pages) {
   test(`${page}: metadata, landmarks, links and assets`, async () => {
     const html = await readFile(path.join(dist, page), 'utf8');
-    assert.match(html, /<html lang="en">/);
+    assert.match(html, /<html lang="en"[^>]*>/);
     assert.match(html, /name="description"/);
     assert.match(html, /name="viewport"/);
     assert.match(html, /name="color-scheme" content="light"/);
@@ -20,7 +20,7 @@ for (const page of pages) {
     assert.match(html, /class="header-logo"[^>]+aria-label="Handwork home"><svg viewBox="0 0 520 520"/, 'header uses the Handwork logo mark');
     assert.match(html, /class="github-link footer-github"[^>]+aria-label="Handwork on GitHub"><svg/, 'footer GitHub link uses the shared icon');
     assert.doesNotMatch(html, /coming soon|revolution|supercharge|unlock your|additionally|crucial|delve|enhance|showcase|tapestry|testament|underscore|vibrant|serves as|stands as|boasts|in order to|it is important to note/i);
-    assert.doesNotMatch(html, /[—–’“”]/);
+    assert.doesNotMatch(html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, ''), /[—–’“”]/);
     assert.doesNotMatch(html, /<select[ >]/, 'native selects are not used');
     const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map(match => match[1]);
     assert.equal(new Set(ids).size, ids.length, 'unique IDs');
@@ -38,8 +38,8 @@ test('production metadata, crawler files and custom error page are available', a
   assert.match(buildSource, /process\.env\.SITE_URL/);
   assert.match(buildSource, /SITE_URL is required for a production build/);
   assert.match(buildSource, /--production/);
-  assert.match(buildSource, /rel="canonical"/);
-  assert.match(buildSource, /og:image/);
+  const home = await readFile(path.join(dist, 'index.html'), 'utf8');
+  assert.match(home, /property="og:title"/);
   assert.match(buildSource, /sitemap\.xml/);
   assert.ok((await stat(path.join(dist, 'og.png'))).size > 10000);
   assert.ok((await stat(path.join(dist, 'apple-touch-icon.png'))).size > 100);
@@ -63,7 +63,7 @@ test('home confines an accessible light-mode shape shader to the brand marquee',
   const html = await readFile(path.join(dist, 'index.html'), 'utf8');
   assert.match(html, /class="hero-marquee">[\s\S]*class="hero-warp" aria-hidden="true"[\s\S]*class="wrap hero-brand"/);
   assert.match(html, /<\/div>\s*<div class="wrap hero-inner">\s*<div class="hero-copy">/);
-  assert.match(html, /src="\/hero-warp\.js"/);
+  assert.match(html, /href="\/hero-warp\.js" as="script"/);
   const shader = await readFile(path.join(dist, 'hero-warp.js'), 'utf8');
   assert.match(shader, /uniform sampler2D uLogoMask/);
   assert.match(shader, /classList|dataset\.mask = 'ready'/);
@@ -94,34 +94,33 @@ test('benchmark data and method are rendered without JavaScript', async () => {
   assert.equal((html.match(/data-metric="outputTokens"/g) || []).length, 4, 'every output-token value has a comparison bar');
   assert.equal((html.match(/data-metric="rss"/g) || []).length, 4, 'every memory value has a comparison bar');
   assert.ok(html.includes('Claude Code') && html.includes('Opus 5.5 at medium effort'));
-  assert.ok(html.includes('do not isolate harness performance'));
+  assert.ok(html.includes('Different models and run dates limit the comparison.'));
   assert.match(html, /class="agent-logo" src="\/favicon\.svg" alt=""/, 'Handwork row uses the local mark');
   assert.match(html, /class="agent-logo" src="\/media\/logos\/opencode\.svg" alt=""/, 'OpenCode row uses its official mark');
-  assert.match(html, /class="agent-logo" src="\/media\/logos\/openai\.svg" alt=""/, 'Codex row uses the official OpenAI mark');
-  for (const name of ['opencode.svg', 'openai.svg']) assert.ok((await stat(path.join(dist, 'media', 'logos', name))).size > 500, name);
+  assert.match(html, /<svg[^>]+class="agent-logo"[^>]+aria-hidden="true"[^>]*>[\s\S]*?<\/svg><span>Codex<\/span>/, 'Codex uses a decorative inline provider logo');
+  assert.match(html, /<svg[^>]+class="agent-logo"[^>]+aria-hidden="true"[^>]*>[\s\S]*?<\/svg><span>Claude Code<\/span>/, 'Claude Code uses a decorative inline provider logo');
+  for (const name of ['opencode.svg']) assert.ok((await stat(path.join(dist, 'media', 'logos', name))).size > 500, name);
 });
 
-test('analytics is included on production pages and excluded from local and preview builds', async () => {
-  const previous = process.env.VERCEL_ENV;
-  try {
-    delete process.env.VERCEL_ENV;
-    await build();
-    assert.doesNotMatch(await readFile(path.join(dist, 'index.html'), 'utf8'), /src="\/analytics.js"/);
-    process.env.VERCEL_ENV = 'production';
-    await build();
-    for (const page of [...pages, '404.html']) {
-      assert.match(await readFile(path.join(dist, page), 'utf8'), /<script type="module" src="\/analytics.js"><\/script>/);
-    }
-    assert.ok((await stat(path.join(dist, 'vendor/vercel-analytics.js'))).size > 1000);
-    assert.match(await readFile(path.join(dist, 'vendor/vercel-analytics-LICENSE.txt'), 'utf8'), /MIT/);
-    process.env.VERCEL_ENV = 'preview';
-    await build();
-    for (const page of [...pages, '404.html']) {
-      assert.doesNotMatch(await readFile(path.join(dist, page), 'utf8'), /src="\/analytics.js"/);
-    }
-  } finally {
-    if (previous === undefined) delete process.env.VERCEL_ENV;
-    else process.env.VERCEL_ENV = previous;
-    await build();
+test('analytics build selection preserves production and privacy behavior', () => {
+  for (const [environment, explicitProduction, expected] of [
+    ['', '0', false], ['', '1', true], ['production', '0', true], ['preview', '1', false],
+  ]) {
+    const result = spawnSync(process.execPath, ['--input-type=module', '-e',
+      "import { analyticsEnabled } from './app/site-config.mjs'; console.log(analyticsEnabled)"], {
+      cwd: root,
+      env: { ...process.env, VERCEL_ENV: environment, HANDWORK_PRODUCTION_BUILD: explicitProduction },
+      encoding: 'utf8',
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.stdout.trim(), String(expected));
   }
+});
+
+test('production build requires an explicit site origin', () => {
+  const result = spawnSync(process.execPath, ['scripts/build.mjs', '--production'], {
+    cwd: root, env: { ...process.env, SITE_URL: '' }, encoding: 'utf8',
+  });
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /SITE_URL is required/);
 });

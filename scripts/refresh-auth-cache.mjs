@@ -67,17 +67,18 @@ for (const key of Object.keys(data)) {
 }
 const displayDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
   .format(new Date(`${date}T00:00:00Z`));
-const htmlPath = path.join(site, 'src/index.html');
+const htmlPath = path.join(site, 'app/page.jsx');
 let html = fs.readFileSync(htmlPath, 'utf8');
 // The interrupted cohort remains in its report; it no longer supplies the displayed cache row.
 assert.ok(Object.values(data).every(task => task.values[0].inputTokens !== null && task.values[0].outputTokens !== null));
 html = html.replace(' A dash means unavailable: at least one retained Handwork attempt had unreported request usage, so its all-attempt token means are unavailable.', '')
-  .replace(' A retained attempt coincided with host sleep; see timing details in the method report.', '');
-const note = ` Authorization and cache uses a separate complete five-attempt rerun on ${displayDate}; its method report links to the earlier retained cohort.`;
+  .replace(' A retained attempt coincided with host sleep; see timing details in the method report.', '')
+  .replace(/ Cache results use a separate complete five-attempt rerun on [^.]+\./g, '');
+const note = ` Cache results use a separate complete five-attempt rerun on ${displayDate}.`;
 assert.ok(html.includes('The older Handwork results remain in the archived reports.'));
 html = html.replace('The older Handwork results remain in the archived reports.', 'The older Handwork results remain in the archived reports.' + note);
 html = html.replace('including the latest Handwork attempts and links to the archived series.</p></noscript>',
-  `including links to the archived series. Authorization/cache has a <a href="/benchmarks/${source}/REPORT.md">separate five-attempt rerun</a>.</p></noscript>`);
+  `including links to the archived series. Authorization/cache has a <a href="/benchmarks/${source}/">separate five-attempt rerun</a>.</p></noscript>`);
 const safe = attempts.map(r => ({ task: r.task, attempt: r.attempt, success: r.success, duration_s: r.duration_s,
   input_tokens: r.input_tokens, output_tokens: r.output_tokens, tool_calls: r.tool_calls, accounting_available: true }));
 const exported = { schema_version: 1, date, handwork: summary, attempts: safe,

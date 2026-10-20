@@ -1,12 +1,13 @@
 import http from 'node:http';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { build, root } from './build.mjs';
-await build();
-const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.gif': 'image/gif', '.png': 'image/png', '.json': 'application/json', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8' };
+import { root } from './prepare.mjs';
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.gif': 'image/gif', '.png': 'image/png', '.json': 'application/json', '.xml': 'application/xml', '.txt': 'text/plain; charset=utf-8', '.woff2': 'font/woff2' };
 const base = path.join(root, 'dist');
+const headerFile = await readFile(path.join(base, '_headers'), 'utf8');
+const csp = headerFile.match(/Content-Security-Policy: (.+)/)[1];
 const securityHeaders = {
-  'Content-Security-Policy': "default-src 'self'; base-uri 'self'; connect-src 'self'; font-src 'self'; frame-ancestors 'none'; img-src 'self' blob: data:; object-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'",
+  'Content-Security-Policy': csp,
   'Permissions-Policy': 'camera=(), geolocation=(), microphone=()',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Content-Type-Options': 'nosniff',

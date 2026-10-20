@@ -1,0 +1,106 @@
+@layer theme, site, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "honestui/theme.css" layer(theme);
+@import "../public/style.css" layer(site);
+@import "honestui/prose.css" layer(components);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source "./components/ui";
+@source "./components/ai";
+
+@layer site {
+  :root {
+    --hui-color-background-accent-emphasis: var(--text);
+    --hui-color-background-accent-emphasis-hover: #000000;
+    --hui-color-foreground-accent-emphasis: #ffffff;
+    --hui-color-border-accent-emphasis: var(--text);
+    --hui-font-body: var(--mono);
+    --hui-font-title: var(--mono);
+    --hui-density-control-height: 44px;
+  }
+}
+
+/* State and layout adaptations for the site's existing recording controls. */
+.recording-viewer-tabs [data-slot="button"] { min-height: 44px; }
+.recording-viewer-tabs [aria-pressed="true"] {
+  background: var(--hui-color-background-neutral-secondary);
+  color: var(--text);
+  font-weight: 600;
+}
+.desktop-download-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px;
+  align-items: center;
+}
+.desktop-download-row .download-button { width: 100%; height: 44px; }
+.demo-wrap[data-slot="tabs"] { width: min(1100px, calc(100% - 64px)); }
+.demo-tabs[data-slot="tabs-list"] { max-width: 100%; margin-bottom: 12px; }
+.demo-tabs [data-slot="tabs-trigger"] { min-height: 44px; }
+.capture-shell [data-slot="tabs-content"] { grid-area: 1 / 1; min-width: 0; }
+/* Match the adjacent 44px action while preserving the two code-block layers. */
+.install-code-block { --font-mono: var(--mono); }
+.install-code-block > div { height: 36px; padding: 0; }
+.install-code-block pre { padding: 0 12px; }
+.install-code-block [data-slot="button"] { width: 44px; height: 36px; min-height: 36px; }
+.docs-nav-toggle[data-slot="button"] { display: none; }
+@media (max-width: 620px) {
+  .docs-nav-toggle[data-slot="button"] { display: inline-flex; }
+}
+@media (max-width: 620px) {
+  .desktop-download-row { grid-template-columns: minmax(0, 1fr); }
+  .demo-wrap[data-slot="tabs"] { width: calc(100% - 24px); }
+  .demo-tabs[data-slot="tabs-list"] { width: 100%; }
+  .capture-actions { flex-wrap: wrap; gap: 10px; }
+  .recording-viewer-play[data-slot="button"] { width: 44px; padding: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="button"], [data-slot="button"]::before, [data-slot="button"]::after {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  [data-slot="button"] { border: 1px solid ButtonText; }
+}
+
+.benchmark-task-picker { width: 240px; }
+@media (max-width: 620px) {
+  .benchmark-task-picker { width: auto; min-width: 0; flex: 1; }
+}
+
+.benchmark-report { max-width: 1040px; padding-block: 40px 80px; }
+.report-navigation { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-bottom: 32px; font-size: 13px; }
+.report-navigation a { display: inline-flex; align-items: center; min-height: 44px; }
+.report-prose { --prose-size: 15px; --prose-leading: 1.75; --prose-flow: 1.25em; --prose-font-mono: var(--mono); }
+.report-prose h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.3; }
+.report-prose h2 { font-size: 21px; }
+.report-prose [data-slot="markdown-table"] { overflow-x: auto; }
+.report-prose :not(pre) > code { overflow-wrap: anywhere; }
+@media (max-width: 620px) {
+  .benchmark-report { padding-block: 24px 48px; }
+  .report-prose { --prose-size: 14px; }
+}
+
+/* Honest AI Prose owns the content styling inside each documentation section. */
+.docs-content .honest-prose {
+  --prose-size: 16px;
+  --prose-heading: 22px;
+  --prose-leading: 1.7;
+  --prose-flow: 1.1em;
+  --prose-font-mono: var(--mono);
+}
+.docs-content pre { font-family: var(--mono); }
+.docs-content pre code { font-size: inherit; }
+.docs-content :not(pre) > code { overflow-wrap: anywhere; }
+.docs-content .prose-scroll table { min-width: 480px; }
+
+.docs-content [data-slot="prose-code-block"] { --font-mono: var(--mono); }
+
+/* Keep comparison bars and the existing mobile cards within Honest UI Table. */
+.benchmark-table { border-collapse: separate; }
+.benchmark-table [data-slot="table-cell"] { font-size: inherit; }
+.benchmark-table .handwork-row { background: var(--selected); }
+.benchmark-table .handwork-row > * { background: inherit; color: var(--text); font-weight: 700; }
+@media (max-width: 620px) {
+  .benchmark-table [data-slot="table-header"] { position: absolute; }
+  .benchmark-table [data-slot="table-head"], .benchmark-table [data-slot="table-cell"] { padding: 0; border: 0; white-space: normal; }
+  .benchmark-table tbody [data-slot="table-head"] { width: 100%; padding-bottom: 12px; border-bottom: 1px solid var(--line); font-size: 15px; }
+}
