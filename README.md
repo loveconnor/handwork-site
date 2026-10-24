@@ -60,7 +60,7 @@ The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`)
 
 ## Desktop downloads
 
-Below the terminal demo and benchmarks, the homepage links to Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.5`. The Mac app and compact DMG are signed with Developer ID, notarized by Apple, and stapled. The app extracted from both DMG and update ZIP passed signature, Gatekeeper, and notarization ticket validation. Installed apps check the public `desktop-stable` feed through the sidebar updater. The invalid macOS preview remains withdrawn.
+Below the terminal demo and benchmarks, the homepage links to Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.43`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
 
 ## Content provenance
 

@@ -133,22 +133,22 @@ export default function Home() {
             
           </div>
           <div className="desktop-downloads">
-            <p className="desktop-release">Desktop downloads <span>v0.1.5</span></p>
+            <p className="desktop-release">Desktop downloads <span>v0.1.43</span></p>
             <div className="desktop-download-row">
               <div><h3>macOS Apple Silicon</h3><p>For Macs with an M-series chip.</p></div>
-              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.5/Handwork-0.1.5-arm64.dmg" aria-label="Download Handwork for macOS Apple Silicon">Download macOS</a></Button>
+              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.43/Handwork-0.1.43-darwin-aarch64.dmg" aria-label="Download Handwork for macOS Apple Silicon">Download macOS</a></Button>
             </div>
             <p className="desktop-platform-note">Signed with Developer ID and notarized by Apple.</p>
             <div className="desktop-download-row">
               <div><h3>Windows x64</h3><p>For Intel and AMD PCs.</p></div>
-              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.5/Handwork-Setup-0.1.5-x64.exe" aria-label="Download Handwork for Windows x64">Download x64</a></Button>
+              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.43/Handwork-0.1.43-windows-x86_64.exe" aria-label="Download Handwork for Windows x64">Download x64</a></Button>
             </div>
             <div className="desktop-download-row">
               <div><h3>Windows ARM64</h3><p>For ARM PCs, including Snapdragon.</p></div>
-              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.5/Handwork-Setup-0.1.5-arm64.exe" aria-label="Download Handwork for Windows ARM64">Download ARM64</a></Button>
+              <Button asChild className="download-button min-h-11 px-5 no-underline"><a  href="https://github.com/loveconnor/handwork/releases/download/desktop-v0.1.43/Handwork-0.1.43-windows-aarch64.exe" aria-label="Download Handwork for Windows ARM64">Download ARM64</a></Button>
             </div>
             <p className="desktop-platform-note">Find your PC type in Settings &gt; System &gt; About.</p>
-            <a className="text-link" href="https://github.com/loveconnor/handwork/releases/tag/desktop-v0.1.5">Release notes</a>
+            <a className="text-link" href="https://github.com/loveconnor/handwork/releases/tag/desktop-v0.1.43">Release notes</a>
           </div>
         </section>
 
