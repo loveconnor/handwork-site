@@ -67,7 +67,7 @@ for (const key of Object.keys(data)) {
 }
 const displayDate = new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
   .format(new Date(`${date}T00:00:00Z`));
-const htmlPath = path.join(site, 'app/page.jsx');
+const htmlPath = path.join(site, 'app/benchmarks/page.jsx');
 let html = fs.readFileSync(htmlPath, 'utf8');
 // The interrupted cohort remains in its report; it no longer supplies the displayed cache row.
 assert.ok(Object.values(data).every(task => task.values[0].inputTokens !== null && task.values[0].outputTokens !== null));

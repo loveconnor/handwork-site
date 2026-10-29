@@ -30,12 +30,12 @@ try {
   await mkdir(new URL('../test-results/', import.meta.url), { recursive: true });
   for (const width of [1440, 768, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
-    for (const route of ['/', '/docs/', '/about/']) {
+    for (const route of ['/', '/benchmarks/', '/docs/', '/about/']) {
       await page.goto(origin + route);
       await page.waitForLoadState('networkidle');
       assert.equal(await page.locator('h1').count(), 1);
-      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(255, 255, 255)');
-      assert.match(await page.evaluate(() => getComputedStyle(document.body).fontFamily), /Geist Mono/);
+      assert.equal(await page.evaluate(() => getComputedStyle(document.body).backgroundColor), 'rgb(244, 244, 242)');
+      assert.match(await page.evaluate(() => getComputedStyle(document.body).fontFamily), /^"?Geist"?,/);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `No page overflow: ${route} @ ${width}`);
       assert.ok(await page.evaluate(() => [...document.images].every(image => image.complete && image.naturalWidth > 0)), 'Images loaded');
       if (route === '/') {
@@ -43,31 +43,25 @@ try {
           buttons.map(button => { const bounds = button.getBoundingClientRect(); return [bounds.x, bounds.width, bounds.height].map(Math.round); }));
         assert.equal(downloadBounds.length, 3);
         for (const bounds of downloadBounds) assert.deepEqual(bounds, downloadBounds[0], `Download buttons align and match sizes @ ${width}`);
-        assert.equal(await page.locator('.demo-tabs [data-slot="tabs-trigger"]').count(), 2, 'Recording uses Honest UI tabs');
-        assert.equal(await page.locator('#task-select[data-slot="select-trigger"]').count(), 1, 'Benchmark picker uses Honest UI Select');
-        assert.equal(await page.locator('.demo-tabs [data-slot="tabs-trigger"]').evaluateAll(tabs => tabs.every(tab => tab.scrollWidth <= tab.clientWidth)), true, `Tab labels remain fully visible @ ${width}`);
+        assert.equal(await page.locator('.hero-demo-video').count(), 1, 'Hero shows the combined demo video');
+        assert.equal(await page.locator('.hero-demo-video').evaluate(video => video.getBoundingClientRect().width <= innerWidth), true, `Video fits @ ${width}`);
 
+        assert.equal(await page.locator('.lp-ascii canvas').count(), 1, `ASCII shader mounted @ ${width}`);
+        const silkBounds = await page.locator('.lp-ascii').boundingBox();
+        const panelBounds = await page.locator('.lp-hero-panel').boundingBox();
+        assert.equal(Math.round(silkBounds.height), Math.round(panelBounds.height), 'ASCII shader is confined to the hero panel');
+        await expect(page.locator('.lp-title [aria-hidden="true"]').last()).toHaveCSS('opacity', '1', { timeout: 5000 });
+        assert.match(await page.locator('.lp-title').evaluate(title => getComputedStyle(title).fontFamily), /^"?Geist"?,/, 'Display type uses Geist Sans');
+        assert.equal(await page.locator('.lp-memory li').count(), 4, 'Memory comparison lists all four agents');
+        await expect(page.locator('.lp-download')).not.toHaveAttribute('data-platform', 'unknown');
+      }
+      if (route === '/benchmarks/') {
+        assert.equal(await page.locator('#task-select[data-slot="select-trigger"]').count(), 1, 'Benchmark picker uses Honest UI Select');
         if (width > 620) {
           const overflowingCells = await page.locator('.benchmark-table th, .benchmark-table td').evaluateAll(cells =>
             cells.filter(cell => cell.scrollWidth > cell.clientWidth + 1).map(cell => cell.textContent.trim()));
           assert.deepEqual(overflowingCells, [], `Benchmark cells remain readable without overlap @ ${width}`);
         }
-        assert.equal(await page.locator('.hero-warp').getAttribute('data-renderer'), 'webgl', `Shape shader rendered @ ${width}`);
-        await page.locator('.hero-warp[data-ready="true"][data-mask="ready"]').waitFor();
-        assert.equal(await page.locator('.hero-warp canvas').count(), 1);
-        assert.ok(await page.locator('.hero-warp canvas').evaluate(canvas => canvas.width > 0 && canvas.height > 0), 'Hero canvas is sized');
-        assert.equal(await page.locator('.pixel-logo').evaluate(logo => getComputedStyle(logo).opacity), '0', 'Wordmark is rendered by the shader mask');
-        const shaderBounds = await page.locator('.hero-warp').boundingBox();
-        const marqueeBounds = await page.locator('.hero-marquee').boundingBox();
-        const heroBounds = await page.locator('.hero').boundingBox();
-        assert.equal(Math.round(shaderBounds.height), Math.round(marqueeBounds.height), 'Shader is confined to marquee');
-        assert.ok(shaderBounds.height < heroBounds.height, 'Shader does not cover product copy');
-        const brandGap = await page.evaluate(() => {
-          const byline = document.querySelector('.welcome-line').getBoundingClientRect();
-          const copy = document.querySelector('.hero-copy').getBoundingClientRect();
-          return copy.top - byline.bottom;
-        });
-        assert.ok(brandGap <= 72, `Brand and product copy stay grouped: ${brandGap}px @ ${width}`);
       }
       const tinyLinks = await page.locator('header a').evaluateAll(links => links.filter(link => link.getClientRects().length > 0 && link.getBoundingClientRect().width === 0).length);
       assert.equal(tinyLinks, 0, 'Header links visible');
@@ -88,7 +82,7 @@ try {
   await page.goto(origin);
   const footerTextLink = page.getByRole('navigation', { name: 'Footer navigation' }).getByRole('link', { name: 'Documentation' });
   const footerRestingStyle = await footerTextLink.evaluate(link => ({ color: getComputedStyle(link).color, opacity: getComputedStyle(link).opacity }));
-  assert.equal(footerRestingStyle.color, 'rgb(32, 32, 32)', 'Footer text link starts dark');
+  assert.equal(footerRestingStyle.color, 'rgb(11, 11, 13)', 'Footer text link starts dark');
   await footerTextLink.hover();
   await page.waitForTimeout(150);
   assert.ok(Number(await footerTextLink.evaluate(link => getComputedStyle(link).opacity)) < Number(footerRestingStyle.opacity), 'Footer text link becomes lighter on hover');
@@ -98,48 +92,16 @@ try {
   await page.keyboard.press('Enter');
   await expect(installCode.getByRole('status')).toHaveText('Install command copied.');
   assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'npm install -g handwork');
-  await page.getByRole('button', { name: 'Play recording', exact: true }).click();
-  assert.match(await page.locator('#inspect-panel img').getAttribute('src'), /\.gif$/);
-  await page.getByRole('tab', { name: /Inspect/ }).focus();
-  await page.evaluate(() => {
-    window.__keyboardTabTransitions = [];
-    document.querySelector('.demo-wrap').addEventListener('transitionrun', event => {
-      if (event.target.matches('[role="tabpanel"], .tab-indicator')) window.__keyboardTabTransitions.push(event.propertyName);
-    });
-  });
-  await page.keyboard.press('ArrowRight');
-  assert.equal(await page.locator('#verify-tab').getAttribute('aria-selected'), 'true');
-  await page.locator('#inspect-panel').waitFor({ state: 'hidden' });
-  await page.waitForTimeout(50);
-  assert.deepEqual(await page.evaluate(() => window.__keyboardTabTransitions), [], 'Keyboard tab changes are immediate');
-  assert.match(await page.locator('#verify-panel img').getAttribute('src'), /\.gif$/);
-  await page.getByRole('button', { name: 'Pause recording' }).click();
-  assert.match(await page.locator('#verify-panel img').getAttribute('src'), /\.png$/);
-  assert.equal(await page.locator('#demo-open').getAttribute('target'), null, 'Full-size recording stays in the Handwork interface');
-  await page.locator('#demo-open').click();
-  assert.equal(await page.locator('#recording-viewer').getAttribute('open'), '', 'Full-size viewer opens');
-  assert.equal(await page.locator('#recording-viewer-title').textContent(), 'Edit and test');
-  assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /verify\.png$/);
-  assert.equal(await page.evaluate(() => location.hash), '#recording');
-  assert.equal(await page.evaluate(() => history.state?.handworkRecording?.step), 'verify');
-  assert.equal(await page.evaluate(() => document.activeElement?.id), 'recording-viewer-close', 'Viewer focuses its close control');
-  const recordingViewer = page.locator('#recording-viewer');
-  await recordingViewer.getByRole('button', { name: 'Play recording', exact: true }).click();
-  assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /verify\.gif$/);
-  await recordingViewer.getByRole('button', { name: /01\s+Inspect/ }).click();
-  await expect(page.locator('#inspect-tab'), 'Viewer step selection stays in sync with the page').toHaveAttribute('aria-selected', 'true');
-  assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /inspect\.gif$/);
-  await recordingViewer.getByRole('button', { name: 'Pause recording', exact: true }).click();
-  assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /inspect\.png$/);
-  await page.keyboard.press('Escape');
-  await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
-  assert.equal(await page.evaluate(() => location.hash), '');
-  assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-open', 'Viewer restores focus to its opener');
-  await page.locator('#demo-open').click();
-  assert.equal(await page.locator('#recording-viewer').getAttribute('open'), '');
-  await page.evaluate(() => history.back());
-  await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
-  assert.equal(await page.evaluate(() => document.activeElement?.id), 'demo-open', 'Browser Back closes the viewer and restores focus');
+  const heroVideo = page.locator('.hero-demo-video');
+  await heroVideo.scrollIntoViewIfNeeded();
+  await expect.poll(() => heroVideo.evaluate(video => video.readyState)).toBeGreaterThanOrEqual(2);
+  assert.equal(await heroVideo.evaluate(video => video.duration), 24);
+  assert.equal(await heroVideo.evaluate(video => video.muted && video.loop && video.controls && video.playsInline), true);
+  await heroVideo.evaluate(video => video.play());
+  await expect.poll(() => heroVideo.evaluate(video => video.currentTime)).toBeGreaterThan(0);
+  await heroVideo.evaluate(video => video.pause());
+  assert.equal(await heroVideo.evaluate(video => video.paused), true);
+  await page.goto(origin + '/benchmarks/');
   assert.ok((await page.locator('.benchmark-heading').textContent()).includes('October 19, 2026'));
   assert.ok((await page.locator('.benchmark-notes').textContent()).includes('September 18-19'));
   const refreshCases = ['Pagination', 'Authorization and cache', 'BullMQ worker recovery', 'Async search'].map(option => {
@@ -203,9 +165,9 @@ try {
   await page.keyboard.press('Escape');
   await expect(page.locator('#task-select')).toHaveAttribute('aria-expanded', 'false');
   await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.reload();
-  assert.match(await page.locator('#inspect-panel img').getAttribute('src'), /\.png$/);
-  assert.equal(await page.locator('.hero-warp').getAttribute('data-motion'), 'reduced');
+  await page.goto(origin + '/');
+  assert.equal(await page.locator('.hero-demo-video').evaluate(video => video.paused), true);
+  await expect(page.locator('.lp-reveal').first()).toHaveCSS('visibility', 'visible');
   await page.goto(origin + '/docs/');
   const examples = page.locator('.docs-content [data-slot="prose-code-block"]');
   await expect(examples).toHaveCount(9);
@@ -225,18 +187,14 @@ try {
   assert.match(await missingResponse.text(), /That page does not exist/);
   await page.setViewportSize({ width: 390, height: 1000 });
   await page.goto(origin + '/');
+  const mobileVideo = page.locator('.hero-demo-video');
+  assert.equal(await mobileVideo.evaluate(video => video.getBoundingClientRect().width <= innerWidth), true, 'Mobile video fits the viewport');
+  assert.equal(await mobileVideo.evaluate(video => video.paused), true, 'Reduced-motion video starts paused');
+  await mobileVideo.evaluate(video => video.play());
+  await expect.poll(() => mobileVideo.evaluate(video => video.currentTime)).toBeGreaterThan(0);
+  await mobileVideo.evaluate(video => video.pause());
+  await page.goto(origin + '/benchmarks/');
   assert.equal(await page.locator('.benchmark-table').evaluate(table => table.scrollWidth <= table.clientWidth), true, 'Mobile benchmark does not require horizontal scrolling');
-  assert.equal(await page.locator('.capture-shell').evaluate(shell => shell.scrollWidth <= shell.clientWidth), true, 'Mobile recording preview does not require horizontal scrolling');
-  assert.ok(await page.locator('#demo-open').evaluate(link => link.getBoundingClientRect().height >= 44), 'Full-size recording link has a 44px mobile target');
-  await page.locator('#demo-open').click();
-  assert.equal(await page.locator('#recording-viewer').evaluate(viewer => Math.round(viewer.getBoundingClientRect().height)), 1000, 'Mobile viewer fills the viewport');
-  assert.equal(await page.locator('#recording-viewer-play').getAttribute('aria-pressed'), 'false', 'Reduced-motion viewer starts paused');
-  assert.equal(await page.locator('#recording-viewer-play .playback-icons').isVisible(), true, 'Mobile playback icon remains visible when its text label is hidden');
-  assert.ok(await page.locator('#recording-viewer-content').evaluate(content => content.scrollWidth > content.clientWidth), 'Full-size mobile recording can be panned at its natural size');
-  await page.locator('#recording-viewer-play').click();
-  assert.match(await page.locator('#recording-viewer-image').getAttribute('src'), /\.gif$/);
-  await page.getByRole('button', { name: 'Close full-size recording' }).click();
-  await page.locator('#recording-viewer').waitFor({ state: 'hidden' });
   await page.locator('#task-select').click();
   await expect(page.getByRole('option')).toHaveCount(4);
   for (const option of await page.getByRole('option').all()) assert.ok(await option.evaluate(item => item.getBoundingClientRect().height >= 44), 'Benchmark options have 44px mobile targets');
@@ -258,15 +216,31 @@ try {
   await expect(page).toHaveURL(`${origin}/benchmarks/fair-comparison/`);
   const noJS = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await noJS.newPage();
-  await staticPage.goto(origin);
+  await staticPage.goto(origin + '/benchmarks/');
   assert.ok((await staticPage.locator('table').textContent()).includes(`${handworkRefresh.handwork.search.median_peak_mib.toFixed(1)} MiB`));
-  assert.ok(await staticPage.locator('#inspect-panel img').isVisible());
-  assert.equal(await staticPage.locator('#demo-open').getAttribute('target'), null, 'No-JavaScript recording fallback stays in the same tab');
-  assert.match(await staticPage.locator('#demo-open').getAttribute('href'), /inspect\.png$/);
+  await staticPage.goto(origin);
+  assert.ok(await staticPage.locator('.lp-reveal').first().isVisible(), 'Reveal content is visible without JavaScript');
+  assert.ok((await staticPage.locator('.lp-memory').textContent()).includes(`${handworkRefresh.handwork.search.median_peak_mib.toFixed(1)} MiB`));
+  assert.ok(await staticPage.locator('.hero-demo-video').isVisible());
+  assert.equal(await staticPage.locator('.hero-demo-video').evaluate(video => video.controls && video.paused), true, 'Native controls remain available without JavaScript');
+  assert.match(await staticPage.locator('.hero-demo-video').getAttribute('poster'), /handwork-hero-poster\.jpg$/);
   await staticPage.goto(`${origin}/benchmarks/handwork-2026-10-19/`);
   await expect(staticPage.locator('.honest-prose h1')).toHaveText('Handwork refresh — October 19, 2026');
   await expect(staticPage.locator('.honest-prose table')).toHaveCount(3);
   await noJS.close();
+  const platformCases = [
+    ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36', 'win-x64', /Setup-[\d.]+-x64\.exe$/],
+    ['Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1', 'mobile', /#download$/],
+  ];
+  for (const [userAgent, platform, href] of platformCases) {
+    const platformContext = await browser.newContext({ userAgent });
+    const platformPage = await platformContext.newPage();
+    await platformPage.goto(origin);
+    await expect(platformPage.locator('.lp-download')).toHaveAttribute('data-platform', platform);
+    assert.match(await platformPage.locator('.lp-download a').getAttribute('href'), href, `${platform}: hero links to the matching download`);
+    assert.equal(await platformPage.locator('.desktop-download-row[data-match]').count(), platform === 'mobile' ? 0 : 1, `${platform}: one download is marked for this device`);
+    await platformContext.close();
+  }
   const analyticsContext = await browser.newContext();
   const analyticsPage = await analyticsContext.newPage();
   let analyticsRequests = 0;
@@ -299,7 +273,7 @@ try {
   assert.equal(analyticsRequests, 1, 'Do Not Track prevents tracking');
   await analyticsContext.close();
   assert.deepEqual(errors, []);
-  console.log('PASS: 3 routes × 4 viewports; full-size viewer, GIF playback, browser Back, focus restoration, mobile panning, reduced motion, docs navigation, 404, rendered benchmark reports, archived-report navigation, and no-JS baseline. Screenshots in test-results/.');
+  console.log('PASS: 4 routes × 4 viewports; hero video playback, mobile video layout, reduced motion, docs navigation, 404, rendered benchmark reports, archived-report navigation, and no-JS baseline. Screenshots in test-results/.');
 } finally {
   await browser?.close();
   if (server.exitCode === null) { const exited = once(server, 'exit'); server.kill('SIGTERM'); await exited; }

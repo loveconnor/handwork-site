@@ -1,0 +1,3 @@
+Components in this directory are adapted from React Bits (https://reactbits.dev),
+by David Haz, distributed under the MIT + Commons Clause license.
+BlurText adds an `as` prop so the heading can render as an <h1>.

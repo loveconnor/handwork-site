@@ -12,8 +12,8 @@ export default function Docs() {
       <main id="main" className="wrap docs-page">
         <header className="docs-hero">
           <p className="page-kicker">Documentation</p>
-          <h1>Start using Handwork.</h1>
-          <p className="page-lead">You need npm and a model provider for the CLI. It supports macOS Apple Silicon and Windows x64 or ARM64. Windows support is experimental.</p>
+          <h1>Set up Handwork.</h1>
+          <p className="page-lead">Install the CLI, connect a model, and run your first task. You need npm and an account with a model provider. Prefer a window? <a href="/#download">Download the desktop app</a>; it includes the agent.</p>
         </header>
 
         <div className="docs-layout">

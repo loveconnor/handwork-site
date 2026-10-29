@@ -1,6 +1,6 @@
 # Handwork site
 
-Next.js App Router site for Handwork, with CLI documentation and desktop app downloads. Pages are authored as React components and exported as static files for hosting. Production pages use Vercel Web Analytics for visitor and page-view counts. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Its SIL Open Font License is stored beside the font in `public/fonts/`.
+Next.js App Router site for Handwork, with CLI documentation and desktop app downloads. Pages are authored as React components and exported as static files for hosting. Production pages use Vercel Web Analytics for visitor and page-view counts. The site self-hosts the same Geist Mono 1.3.1 variable font used by the Handwork terminal app, with system monospace fallbacks. Every page sets text in Geist Sans (variable, from the `geist` 1.8.2 package), self-hosted beside it under the same license; Geist Mono is kept for code, labels, and the hero's ASCII shader. Homepage motion comes from React Bits components; each one respects reduced-motion preferences, and content that animates in stays visible when JavaScript is off. Its SIL Open Font License is stored beside the font in `public/fonts/`.
 
 ## Local development
 
@@ -43,11 +43,18 @@ The recording preview uses the Honest UI tabs registry component in `app/compone
 
 The install command uses Honest AI's `ProseCodeBlock` from the local `honest-ai` registry, adapted to JSX in `app/components/ai/prose-code-block.jsx` with its MIT license. It includes keyboard copying, copy confirmation, and clipboard failure feedback.
 
-The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`) for single selection, keyboard controls, focus, and popup positioning. Selection events update the existing benchmark table and report links.
+The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`) for single selection, keyboard controls, focus, and popup positioning. Selection events update the benchmark table and report links on `/benchmarks/`.
 
 ## Structure
 
-- `app/`: React pages for home, docs, about, and the custom not-found page
+- `app/`: React pages for home, benchmarks, docs, about, and the custom not-found page
+- `app/home.css`: homepage styles (Geist Sans display type over the bone and graphite palette)
+- `app/components/reactbits/`: React Bits components used on the homepage (GradientASCII, BlurText, ScrollReveal, CountUp, AnimatedContent)
+- `app/components/AppMocks.jsx`: small recreations of Handwork desktop app panels for the homepage feature cards; labels and permission modes follow `handwork-desktop`
+- `app/components/ProviderMark.jsx`: provider logos from `@lobehub/icons-static-svg` (MIT, notice in `app/components/LICENSE-lobehub-icons`)
+- `app/components/Cta.jsx`: icon well and OS marks for the shared `.cta` buttons styled in `public/style.css`
+- `app/downloads.mjs`: desktop release version and installer links, shared by the homepage hero and download list
+- `app/components/usePlatform.js`: detects the visitor's OS and CPU after hydration so the hero links to the matching installer
 - `app/components/SiteShell.jsx`: shared navigation and footer
 - `app/site-config.mjs`: release version, metadata, and analytics build settings
 - `public/`: shared styles, browser interactions, favicon, generated GIFs and static posters
@@ -60,7 +67,7 @@ The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`)
 
 ## Desktop downloads
 
-Below the terminal demo and benchmarks, the homepage links to Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.47`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
+The homepage hero links directly to the installer for the visitor's system, and the section below it lists Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.47`. Intel Macs, Linux, and phones see the full list instead. To release a new desktop version, update `desktopVersion` in `app/downloads.mjs`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
 
 ## Content provenance
 
@@ -68,7 +75,7 @@ The images and diagrams section uses the sibling Handwork repository `docs/inlin
 
 CLI copy and documentation use the sibling Handwork repository README and terminal styling in `src/ui/render.zig` / `src/ui/assistant/user_message_card.zig`, inspected September 14, 2026. The site is standalone and does not read the sibling project during build or runtime.
 
-Archived September benchmark values came from a five-attempt series for Handwork, OpenCode, and Codex on pagination, async search, and authorization/cache isolation. All agents used the same model and 600-second limit, fresh workspaces, rotated order, and independent scoring. Every scored outcome is retained. The report and summary are served from `public/benchmarks/fair-comparison/`. Update `public/app.js` and the no-JavaScript table in `app/page.jsx` together.
+Archived September benchmark values came from a five-attempt series for Handwork, OpenCode, and Codex on pagination, async search, and authorization/cache isolation. All agents used the same model and 600-second limit, fresh workspaces, rotated order, and independent scoring. Every scored outcome is retained. The report and summary are served from `public/benchmarks/fair-comparison/`. Update `public/app.js` and the no-JavaScript table in `app/benchmarks/page.jsx` together. The homepage memory comparison in `app/page.jsx` repeats the async search values and must be updated by hand.
 
 The two GIFs come from a real interactive Handwork 0.0.9 session in a disposable project. The raw `script -r` recording contains the terminal output and timing. `scripts/generate-media.py` applies the recorded control sequences to a 110 by 38 terminal with Pyte, then draws each screen with Pillow. The generator caps idle gaps at 650 milliseconds but does not add or rewrite output. Playback is opt in. The page also has static posters, a pause control, keyboard tabs, and a text result.
 
@@ -88,4 +95,4 @@ Each documentation section uses the same Honest AI `honest-prose` styles for hea
 
 The nine documentation examples use the Honest AI code-block component with copy controls and feedback. The component supports the original captioned layout for examples and a compact layout for the homepage install command.
 
-The homepage benchmark uses the Honest UI Table registry components in `app/components/ui/table.jsx`, retaining row headers, task switching, comparison bars, and the mobile card layout. The table container accepts region attributes for keyboard scrolling.
+The `/benchmarks/` page uses the Honest UI Table registry components in `app/components/ui/table.jsx`, retaining row headers, task switching, comparison bars, and the mobile card layout. The table container accepts region attributes for keyboard scrolling.

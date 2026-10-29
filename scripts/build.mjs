@@ -23,7 +23,7 @@ export async function build() {
   });
   const output = path.join(root, 'out');
   if (siteUrl) {
-    const routes = ['/', '/docs/', '/about/', ...(await reportNames()).map(name => `/benchmarks/${name}/`)];
+    const routes = ['/', '/docs/', '/about/', '/benchmarks/', ...(await reportNames()).map(name => `/benchmarks/${name}/`)];
     const urls = routes.map(route => `  <url><loc>${siteUrl}${route}</loc></url>`).join('\n');
     await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`);
     await writeFile(path.join(output, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);

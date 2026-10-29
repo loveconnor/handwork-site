@@ -12,7 +12,7 @@ function fixture({ failure = false } = {}) {
   const site = path.join(base, 'site');
   const results = path.join(base, 'results');
   fs.mkdirSync(results, { recursive: true });
-  for (const name of ['public/app.js', 'app/page.jsx', 'README.md', 'scripts/refresh-handwork-benchmarks.mjs']) {
+  for (const name of ['public/app.js', 'app/benchmarks/page.jsx', 'README.md', 'scripts/refresh-handwork-benchmarks.mjs']) {
     const target = path.join(site, name);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.copyFileSync(path.join(root, name), target);
@@ -62,7 +62,7 @@ test('refresh retains failures, unavailable usage and every historical competito
     for (const key of Object.keys(f.originalDatasets)) {
       assert.deepEqual(exported.comparison[key].values.slice(1), f.originalDatasets[key].values.slice(1));
     }
-    const html = fs.readFileSync(path.join(f.site, 'app/page.jsx'), 'utf8');
+    const html = fs.readFileSync(path.join(f.site, 'app/benchmarks/page.jsx'), 'utf8');
     const handwork = html.match(/<TableRow className="handwork-row">[\s\S]*?<\/TableRow>/)[0];
     for (const text of ['4 / 5', '3.5 s', '—']) assert.ok(handwork.includes(text));
     assert.ok(html.includes('October 19, 2026') && html.includes('September 18-19'));
@@ -97,7 +97,7 @@ test('published cohorts cannot be overwritten', () => {
   try {
     assert.equal(f.command().status, 0);
     const before = fs.readFileSync(path.join(f.site, 'public/app.js'), 'utf8');
-    const html = fs.readFileSync(path.join(f.site, 'app/page.jsx'), 'utf8');
+    const html = fs.readFileSync(path.join(f.site, 'app/benchmarks/page.jsx'), 'utf8');
     assert.ok(!html.includes('unreported request usage'), 'A later fully accounted series clears the old unavailable notice');
     assert.ok(!html.includes('coincided with host sleep'), 'A later uninterrupted series clears the old sleep notice');
     assert.notEqual(f.command().status, 0);
@@ -111,7 +111,7 @@ test('host interruption is disclosed without replacing the original timer record
     f.write('host-pause-review.json', { gaps: [{ id: 'tenant-cache-1-handwork', stopwatch_s: 1, artifact_interval_s: 101 }] });
     const result = f.command();
     assert.equal(result.status, 0, result.stderr);
-    const html = fs.readFileSync(path.join(f.site, 'app/page.jsx'), 'utf8');
+    const html = fs.readFileSync(path.join(f.site, 'app/benchmarks/page.jsx'), 'utf8');
     assert.ok(html.includes('coincided with host sleep'));
     const report = fs.readFileSync(path.join(f.site, 'public/benchmarks/handwork-2026-10-19/REPORT.md'), 'utf8');
     assert.ok(report.includes('| tenant-cache | 1 | 1 | 101 |'));

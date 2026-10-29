@@ -28,7 +28,7 @@ export default async function BenchmarkReport({ params }) {
     <SiteShell>
       <main id="main" className="wrap benchmark-report">
         <nav className="report-navigation" aria-label="Report navigation">
-          <a href="/#benchmarks">Back to benchmarks</a>
+          <a href="/benchmarks/">Back to benchmarks</a>
           <a href={`/benchmarks/${report}/REPORT.md`} download>Download Markdown</a>
         </nav>
         <article aria-label={data.title}>

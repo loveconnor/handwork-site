@@ -27,14 +27,14 @@ try {
       } else {
         assert.deepEqual(hydrationErrors, [], `${mutation}: no hydration warnings`);
         if (mutation === 'root') assert.equal(await page.locator('html').getAttribute('class'), 'js-storylane-extension');
-        await page.locator('#task-select').click();
-        await expect(page.getByRole('option', { name: 'Pagination', exact: true })).toBeVisible();
+        await expect(page.locator('.hero-demo-video')).toHaveAttribute('controls', '');
+        await expect.poll(() => page.locator('.hero-demo-video').evaluate(video => video.readyState)).toBeGreaterThanOrEqual(2);
       }
     } finally {
       await context.close();
     }
   }
-  console.log('PASS: clean hydration, Storylane root attributes, working picker, and descendant mismatch detection.');
+  console.log('PASS: clean hydration, Storylane root attributes, working demo video, and descendant mismatch detection.');
 } finally {
   await browser.close();
 }

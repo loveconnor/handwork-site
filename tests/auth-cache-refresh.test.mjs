@@ -12,7 +12,7 @@ function fixture() {
   const site = path.join(base, 'site');
   const results = path.join(base, 'results');
   fs.mkdirSync(results);
-  for (const name of ['public/app.js', 'app/page.jsx', 'README.md', 'scripts/refresh-auth-cache.mjs',
+  for (const name of ['public/app.js', 'app/benchmarks/page.jsx', 'README.md', 'scripts/refresh-auth-cache.mjs',
     'public/benchmarks/handwork-2026-10-19/summary.json', 'public/benchmarks/handwork-2026-10-19/REPORT.md']) {
     const target = path.join(site, name);
     fs.mkdirSync(path.dirname(target), { recursive: true });
@@ -67,7 +67,7 @@ test('cache update retains failures, all five token totals, every other row and 
     assert.equal(exported.method.previous_cohort, 'handwork-2026-10-19');
     const report = fs.readFileSync(path.join(f.site, 'public/benchmarks/handwork-auth-cache-2026-10-19/REPORT.md'), 'utf8');
     assert.ok(report.includes('| 1 | No | 1 | 100 | 20 |'));
-    const html = fs.readFileSync(path.join(f.site, 'app/page.jsx'), 'utf8');
+    const html = fs.readFileSync(path.join(f.site, 'app/benchmarks/page.jsx'), 'utf8');
     assert.ok(html.includes('separate complete five-attempt rerun'));
     assert.ok(!html.includes('unreported request usage'));
   } finally { f.cleanup(); }

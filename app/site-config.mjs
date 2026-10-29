@@ -7,6 +7,7 @@ export const analyticsEnabled = process.env.VERCEL_ENV
 const pages = {
   home: ['/', 'Handwork | AI coding agent for terminal and desktop', 'Handwork reads your project, edits files, and runs tests with your chosen AI model. Use it in your terminal or the desktop app.'],
   docs: ['/docs/', 'Documentation | Handwork', 'Install Handwork, connect a model, and run your first coding task. Includes CLI commands, permissions, and terminal image support.'],
+  benchmarks: ['/benchmarks/', 'Benchmarks | Handwork', 'Coding task results for Handwork, OpenCode, Codex, and Claude Code: completed fixes, time, tool calls, tokens, and local memory, with every attempt kept.'],
   about: ['/about/', 'About | Handwork', 'Handwork is an AI coding agent by Connor Love. Its Zig runtime connects models to your project through the terminal, desktop app, or JavaScript SDK.'],
 };
 

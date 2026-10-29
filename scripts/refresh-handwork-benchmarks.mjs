@@ -78,8 +78,8 @@ app = app.replace("toolCalls: agent.toolCalls.toFixed(1),", "toolCalls: agent.to
   .replace("inputTokens: Math.round(agent.inputTokens).toLocaleString('en-US'),", "inputTokens: agent.inputTokens === null ? '—' : Math.round(agent.inputTokens).toLocaleString('en-US'),")
   .replace("outputTokens: Math.round(agent.outputTokens).toLocaleString('en-US'),", "outputTokens: agent.outputTokens === null ? '—' : Math.round(agent.outputTokens).toLocaleString('en-US'),")
   .replace('rss: `${agent.rss.toFixed(1)} MiB`', "rss: agent.rss === null ? '—' : `${agent.rss.toFixed(1)} MiB`");
-let html = read('app/page.jsx');
-html = html.replace(/(<h2 id="benchmark-heading">[^<]+<\/h2><p>)[\s\S]*?(<\/p>)/,
+let html = read('app/benchmarks/page.jsx');
+html = html.replace(/(<h[12] id="benchmark-heading">[^<]+<\/h[12]><p>)[\s\S]*?(<\/p>)/,
   (_, open, close) => open + `Four coding tasks, five attempts per task. Handwork was rerun on ${displayDate}. Other agents use earlier results.` + close);
 html = html.replace(/(<TableBody id="benchmark-rows">)([\s\S]*?)(<\/TableBody>)/, (_, open, body, close) => {
   let index = 0;
@@ -173,7 +173,7 @@ fs.mkdirSync(destination, { recursive: true });
 fs.writeFileSync(path.join(destination, 'REPORT.md'), lines.join('\n'));
 fs.writeFileSync(path.join(destination, 'summary.json'), JSON.stringify(exported, null, 2) + '\n');
 fs.writeFileSync(path.join(site, 'public/app.js'), app);
-fs.writeFileSync(path.join(site, 'app/page.jsx'), html);
+fs.writeFileSync(path.join(site, 'app/benchmarks/page.jsx'), html);
 const readme = read('README.md').replace('Benchmark values come from a fresh five-attempt series', 'Archived September benchmark values came from a five-attempt series');
 fs.writeFileSync(path.join(site, 'README.md'), readme + `\nHandwork alone was refreshed on ${displayDate} using the current ReleaseFast build, five attempts on each original task. The original prompts, fixtures, verifiers and budgets are retained. Competitor figures and archived reports are unchanged; dates and methodological differences are visible on the page. The new aggregate export and method are in \`public/benchmarks/${source}/\`. Regenerate only from a complete retained series with \`node scripts/refresh-handwork-benchmarks.mjs /absolute/new-results-directory\`.\n`);
 console.log(`Updated Handwork from all ${records.length} retained attempts; historical competitor values and reports preserved.`);

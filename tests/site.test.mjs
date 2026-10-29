@@ -5,7 +5,7 @@ import path from 'node:path';
 import { root } from '../scripts/prepare.mjs';
 import { spawnSync } from 'node:child_process';
 const dist = path.join(root, 'dist');
-const pages = ['index.html', 'docs/index.html', 'about/index.html'];
+const pages = ['index.html', 'benchmarks/index.html', 'docs/index.html', 'about/index.html'];
 for (const page of pages) {
   test(`${page}: metadata, landmarks, links and assets`, async () => {
     const html = await readFile(path.join(dist, page), 'utf8');
@@ -56,20 +56,22 @@ test('site typography matches the Handwork terminal app font', async () => {
   assert.match(css, /font-family:\s*"Geist Mono"/);
   assert.match(css, /GeistMono-Variable\.woff2/);
   assert.match(css, /--mono:\s*"Geist Mono"/);
-  assert.match(css, /--body-font:\s*var\(--mono\)/);
+  assert.match(css, /--body-font:\s*var\(--sans\)/);
+  assert.match(css, /--sans:\s*"Geist"/);
+  assert.match(css, /Geist-Variable\.woff2/);
   assert.ok((await stat(path.join(root, 'public', 'fonts', 'GeistMono-Variable.woff2'))).size > 50000);
 });
-test('home confines an accessible light-mode shape shader to the brand marquee', async () => {
+test('home hero uses React Bits motion with accessible fallbacks', async () => {
   const html = await readFile(path.join(dist, 'index.html'), 'utf8');
-  assert.match(html, /class="hero-marquee">[\s\S]*class="hero-warp" aria-hidden="true"[\s\S]*class="wrap hero-brand"/);
-  assert.match(html, /<\/div>\s*<div class="wrap hero-inner">\s*<div class="hero-copy">/);
-  assert.match(html, /href="\/hero-warp\.js" as="script"/);
-  const shader = await readFile(path.join(dist, 'hero-warp.js'), 'utf8');
-  assert.match(shader, /uniform sampler2D uLogoMask/);
-  assert.match(shader, /classList|dataset\.mask = 'ready'/);
-  assert.match(shader, /bounds\?\.height \?\? container\.clientHeight\) - y/, 'pointer y is converted to the WebGL bottom origin');
-  assert.match(shader, /hover: hover.*pointer: fine/, 'pointer ripples are limited to fine pointers');
-  assert.ok((await stat(path.join(dist, 'hero-warp.js'))).size > 1000);
+  assert.match(html, /<h1 id="hero-title" class="lp-title">/);
+  assert.match(html, /The coding agent/);
+  assert.match(html, /class="lp-ascii" aria-hidden="true"/, 'ASCII shader is decorative');
+  assert.match(html, /<noscript><style>[^<]*\.lp-reveal\{visibility:visible!important\}/, 'reveal content stays visible without JavaScript');
+  assert.match(html, /href="\/benchmarks\/"/, 'home links to the full benchmark tables');
+  for (const value of ['24.4 MiB', '234.0 MiB', '275.2 MiB', '790.1 MiB', 'Different models and run dates limit the comparison']) assert.ok(html.includes(value), value);
+  assert.ok((await stat(path.join(root, 'public', 'fonts', 'Geist-Variable.woff2'))).size > 50000);
+  const license = await readFile(path.join(root, 'app/components/reactbits/LICENSE'), 'utf8');
+  assert.match(license, /React Bits/);
 });
 test('GIF assets come from the recorded terminal stream', async () => {
   for (const name of ['inspect', 'verify']) {
@@ -84,7 +86,7 @@ test('GIF assets come from the recorded terminal stream', async () => {
   assert.ok((await stat(path.join(root, 'content/actual-run.script'))).size > 1000);
 });
 test('benchmark data and method are rendered without JavaScript', async () => {
-  const html = await readFile(path.join(dist, 'index.html'), 'utf8');
+  const html = await readFile(path.join(dist, 'benchmarks', 'index.html'), 'utf8');
   const refresh = JSON.parse(await readFile(path.join(root, 'public/benchmarks/handwork-2026-10-19/summary.json'), 'utf8'));
   for (const value of [`${refresh.handwork.search.median_success_seconds.toFixed(1)} s`, `${refresh.handwork.search.median_peak_mib.toFixed(1)} MiB`, "55.2 s","790.1 MiB","32.8 s","234.0 MiB","five attempts per task","kept every result", 'October 19, 2026', 'September 18-19']) assert.ok(html.toLowerCase().includes(value.toLowerCase()), value);
   assert.equal((html.match(/data-metric="fixes"/g) || []).length, 4, 'every completed-fixes value has a comparison bar');
