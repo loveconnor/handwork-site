@@ -1,5 +1,5 @@
 // Desktop release links. Bump `desktopVersion` (and the README) for each release.
-export const desktopVersion = "0.1.47";
+export const desktopVersion = "0.1.50";
 export const desktopReleaseNotes = `https://github.com/loveconnor/handwork/releases/tag/desktop-v${desktopVersion}`;
 const base = `https://github.com/loveconnor/handwork/releases/download/desktop-v${desktopVersion}`;
 

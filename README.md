@@ -67,7 +67,7 @@ The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`)
 
 ## Desktop downloads
 
-The homepage hero links directly to the installer for the visitor's system, and the section below it lists Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.47`. Intel Macs, Linux, and phones see the full list instead. To release a new desktop version, update `desktopVersion` in `app/downloads.mjs`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
+The homepage hero links directly to the installer for the visitor's system, and the section below it lists Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.50`. Intel Macs, Linux, and phones see the full list instead. To release a new desktop version, update `desktopVersion` in `app/downloads.mjs`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
 
 ## Content provenance
 
