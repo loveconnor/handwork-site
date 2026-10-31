@@ -21,10 +21,10 @@ npm test
 npm run test:browser
 ```
 
-Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. The displayed CLI version defaults to 0.1.5. Set HANDWORK_VERSION to override it for a release build; this is independent of the private site package version.
+Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. The displayed CLI version defaults to 0.1.7. Set HANDWORK_VERSION to override it for a release build; this is independent of the private site package version.
 
 ```sh
-SITE_URL=https://example.com HANDWORK_VERSION=0.1.5 npm run build:production
+SITE_URL=https://example.com HANDWORK_VERSION=0.1.7 npm run build:production
 ```
 
 Browser checks require the dev dependency and Chromium: `npm install`, then `npx playwright install chromium`. Deploy the generated `dist/` directory to a static host with directory-index support. No production Node.js server or fallback routing is needed. Keep the `npm run build` build-command override and `dist` output-directory override when deploying; they also generate crawler files and the exported security policy. Hosts that support `_headers` should serve the generated `dist/_headers`, whose CSP hashes allow the exact Next.js bootstrap scripts. The local preview uses that same policy.
@@ -67,7 +67,7 @@ The benchmark Task picker uses Honest UI Select (`app/components/ui/select.jsx`)
 
 ## Desktop downloads
 
-The homepage hero links directly to the installer for the visitor's system, and the section below it lists Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.50`. Intel Macs, Linux, and phones see the full list instead. To release a new desktop version, update `desktopVersion` in `app/downloads.mjs`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
+The homepage hero links directly to the installer for the visitor's system, and the section below it lists Windows x64/ARM64 and macOS Apple Silicon installers in `desktop-v0.1.51`. Intel Macs, Linux, and phones see the full list instead. To release a new desktop version, update `desktopVersion` in `app/downloads.mjs`. The Mac app is signed with Developer ID, notarized by Apple, and stapled. Both Windows installers passed installation and launch checks on their respective architectures. Installed apps use the public `desktop-stable` update feed.
 
 ## Content provenance
 
