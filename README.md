@@ -21,10 +21,10 @@ npm test
 npm run test:browser
 ```
 
-Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. The displayed CLI version defaults to 0.1.7. Set HANDWORK_VERSION to override it for a release build; this is independent of the private site package version.
+Set the public origin when creating a production build. The production command stops if `SITE_URL` is missing. The build uses it for canonical URLs, social-card URLs, `robots.txt`, and `sitemap.xml`. The displayed CLI version is 0.1.7, set in `app/site-config.mjs`; update it for each CLI release. It is independent of the private site package version and deployment environment variables.
 
 ```sh
-SITE_URL=https://example.com HANDWORK_VERSION=0.1.7 npm run build:production
+SITE_URL=https://example.com npm run build:production
 ```
 
 Browser checks require the dev dependency and Chromium: `npm install`, then `npx playwright install chromium`. Deploy the generated `dist/` directory to a static host with directory-index support. No production Node.js server or fallback routing is needed. Keep the `npm run build` build-command override and `dist` output-directory override when deploying; they also generate crawler files and the exported security policy. Hosts that support `_headers` should serve the generated `dist/_headers`, whose CSP hashes allow the exact Next.js bootstrap scripts. The local preview uses that same policy.

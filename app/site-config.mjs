@@ -1,4 +1,4 @@
-export const release = process.env.HANDWORK_VERSION || '0.1.7';
+export const release = '0.1.7';
 export const siteUrl = process.env.SITE_URL?.replace(/\/$/, '');
 export const analyticsEnabled = process.env.VERCEL_ENV
   ? process.env.VERCEL_ENV === 'production'
